@@ -1,0 +1,230 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{hwopt}
+
+%%%%%%%%%%%%%%%%%
+%     Title     %
+%%%%%%%%%%%%%%%%%
+\title{Coursework (1) for \emph{Introductory Lectures on Optimization}}
+\author{Hongjue Zhao \\ 3190104515}
+\date{Oct. 1, 2022}
+
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\grad}{\nabla}
+\newcommand{\innerprod}[2]{\langle #1,~#2\rangle}
+
+\begin{document}
+\maketitle
+
+\begin{excercise}\label{e1}
+Let $A$ be an $n \times n$ symmetric matrix. Proof that $A$ is positive semidefinite if and only if all eigenvalues of $A$ are nonnegative. Moreover, $A$ is positive definite if and only if all eigenvalues of $A$ are positive.
+\end{excercise}
+
+\begin{PROOF}{e1} Suppose that
+$$
+Q = \{x \in \mathbb{R}^n \mid x \ne 0\},
+$$
+and the eigenvalues of $A$ are $\lambda_1, \lambda_2, \dots, \lambda_n$. Because $A$ is a symmetric matrix, $A$ is also orthogonally diagnoalizable, which means
+\begin{equation}\label{eq:symmetric_diag}
+    \exists~P \in \mathbb{R}^{n \times n},~\text{s.t.}~P^\top A P = \mathrm{diag}(\lambda_1, \dots, \lambda_n)~\text{and}~P^\top P = E.
+\end{equation}
+
+Here we define $\Lambda \overset{\text{def}}{=} \mathrm{diag}(\lambda_1, \dots, \lambda_n)$. In this case, for any real vector $x \in Q$, we can get
+\begin{equation}\label{eq:e1_final}
+\begin{aligned}
+    x^\top A x &= x^\top P^\top \Lambda P x = (Px)^\top \Lambda (Px) \\
+    &= y^\top \Lambda y = \sum_{i=1}^n \lambda_i y_i^2.
+\end{aligned}
+\end{equation}
+where $y = Px$. According to Eq.~\ref{eq:e1_final} and related definition\cite{strang2006linear}, $x^\top A x > 0$ if and only if $\lambda_i > 0~(i=1, \dots,n)$, which also means $A$ is positive definite. $x^\top A x \ge 0$ if and only if $\lambda_i \ge 0~(i=1, \dots,n)$, which also means $A$ is positive semidefinite. 
+\end{PROOF}
+
+\begin{excercise}\label{e2}
+	For the performance analysis of the Uniform Grid Method, Proof that
+	\begin{equation}
+		\left( \left \lfloor \frac{L}{2\epsilon} \right \rfloor + 2 \right)^n,\; \textrm{and } \; \left( \left \lfloor \frac{L}{2\epsilon} \right \rfloor \right)^n,\nonumber
+	\end{equation}
+	coincide up to an absolute constant multiplicative factor if $\epsilon \leq O(\frac{L}{n})$.
+\end{excercise}
+
+\begin{PROOF}{e2}
+	Since \(\epsilon \le O\left( \frac{L}{n} \right)\), there exists \(M > 0\) that satisfies
+    \begin{equation}\label{eq:e2_1}
+        \begin{aligned}
+            \epsilon \le M \abs{\frac{L}{n}} = M \frac{L}{n} \Leftrightarrow \frac{L}{2\epsilon} \ge \frac{n}{2M}.
+        \end{aligned}
+    \end{equation}
+        
+    Obviously, according to Eq.~\ref{eq:e2_1}, we can get
+    \begin{equation}\label{eq:e2_2}
+        \begin{aligned}
+            1 \le \frac{\left(\left\lfloor \frac{L}{2\epsilon} \right\rfloor + 2\right)^n}{\left(\left\lfloor \frac{L}{2\epsilon} \right\rfloor\right)^n} 
+            = 1 + \sum_{k=1}^n\frac{c_k}{\left(\left\lfloor \frac{L}{2\epsilon} \right\rfloor\right)^k} 
+            \le 1 + \sum_{k=1}^n\frac{c_k}{\left(\left\lfloor \frac{n}{2M} \right\rfloor\right)^k},
+        \end{aligned}
+    \end{equation}
+    in which \(c_k = C_{n}^k 2^k\). As \(n \to \infty\), we can also get
+    \begin{equation}\label{eq:e2_3}
+        \begin{aligned}
+            \lim_{n\to\infty}\left[1 + \sum_{k=1}^n\frac{c_k}{\left(\left\lfloor \frac{n}{2M} \right\rfloor\right)^k}\right] = 1.
+        \end{aligned}
+    \end{equation}
+    Above all, according to Eq.~\ref{eq:e2_2} and Eq.~\ref{eq:e2_3}, we can get the result based on Sandwich theorem:
+    \[
+        \lim_{n \to \infty} \frac{\left(\left\lfloor \frac{L}{2\epsilon} \right\rfloor + 1\right)^n}{\left(\left\lfloor \frac{L}{2\epsilon} \right\rfloor\right)^n} = 1.
+    \]
+    Therefore, the statement is proofed.
+\end{PROOF}
+
+
+\begin{excercise}\label{e3}
+Let $f: \mathbb{R}^n \rightarrow \mathbb{R}$ be a strictly convex function. Let $x_i \in \mathbb{R}^n$ and $\lambda_i > 0$ for $i = 1, 2, \ldots, k$ such that $\sum_{i=1}^{k} \lambda_i = 1$. If
+\[
+f(\lambda_1 x_1 + \cdots + \lambda_k x_k) = \lambda_1 f(x_1) + \cdots + \lambda_k f(x_k), 
+\]
+then show that $x_1 = x_2 = \cdots = x_k$.
+\end{excercise}
+
+\begin{PROOF}{e3} 
+According to related definition about convex function\cite{boyd2004convex}, for strictly convex function $f: \mathbb{R}^n \rightarrow \mathbb{R}$
+\begin{equation}\label{eq:jensen_2}
+    f(\lambda_1 x_1 + \lambda_2 x_2) \le \lambda_1 f(x_1) + \lambda_2 f(x_2), 
+\end{equation}
+where $x_1, ~x_2 \in \mathbb{R}^{n}$ and $\lambda_1 + \lambda_2 = 1$. Equality in Eq.~\ref{eq:jensen_2} holds if and only if $x_1 = x_2$.
+
+Suppose the following inequality is true:
+\begin{equation}\label{eq:jensen_k}
+    f(\lambda_1 x_1 + \dots + \lambda_k x_k) \le \lambda_1 f(x_1) + \cdots + \lambda_k f(x_k)
+\end{equation}
+where $x_1, \dots, x_k \in \mathbb{R}^{n}$ and $\lambda_1 + \dots + \lambda_k = 1$. Therefore, according to Eq.~\ref{eq:jensen_2}, we can get
+\begin{equation}\label{eq:jensen_k+1_1}
+\begin{aligned}
+    f(\lambda_1 x_1 + \dots + \lambda_k x_k  + \lambda_{k+1} x_{k+1}) &= f\left(
+        (1-\lambda_{k+1})\sum_{i=1}^k \frac{\lambda_{i}}{1-\lambda_{k+1}} x_i + \lambda_{k+1} x_{k+1}
+    \right)\\
+    &\le (1-\lambda_{k+1}) f\left(\sum_{i=1}^k \frac{\lambda_{i}}{1-\lambda_{k+1}} x_i \right) + \lambda_{k+1} f(x_{k+1}).
+\end{aligned}
+\end{equation}
+
+According to Eq.~\ref{eq:jensen_k}, we can get
+\begin{equation}\label{eq:jensen_k+1_2}
+    (1-\lambda_{k+1})f\left(\sum_{i=1}^k \frac{\lambda_{i}}{1-\lambda_{k+1}} x_i \right) \le (1-\lambda_{k+1})\sum_{i=1}^k \frac{\lambda_{i}}{1-\lambda_{k+1}} f(x_i) = \sum_{i=1}^k \lambda_{i} f(x_i).
+\end{equation}
+
+Based on Eq.~\ref{eq:jensen_k+1_1}, \ref{eq:jensen_k+1_2}, finally we can get
+\begin{equation}\label{eq:jensen_k+1}
+    f(\lambda_1 x_1 + \dots + \lambda_k x_k  + \lambda_{k+1} x_{k+1}) \le \lambda_1 f(x_1) + \cdots + \lambda_k f(x_k) + \lambda_{k+1} f(x_{k+1}).
+\end{equation}
+Above all, Eq.~\ref{eq:jensen_k} holds.
+
+Since $f$ is strictly convex, in Eq.~\ref{eq:jensen_k}:
+\begin{enumerate}
+    \item When $k = 2$, the inequality is strict since it's the definition of strictly convex functions.
+    \item When $k = m+1$, if $x_1, \dots, x_{m+1}$ are not all equal, then the inequality in Eq.~\ref{eq:jensen_k+1_2} should be strict. If $x_1 = x_2 = \dots = x_m \ne x_{m+1}$, which also means $x_{m + 1} \ne \sum_{i=1}^m \frac{\lambda_i}{1-\lambda_{m+1}} x_i$, then equality in Eq.~\ref{eq:jensen_k+1_1} should be strict.
+\end{enumerate}
+Above all, inequality in Eq.~\ref{eq:jensen_k} should be strict when $x_1, \dots, x_k$ are not all equal. Thus, equality holds if and only if $x_1 = x_2 = \dots = x_k$.
+\end{PROOF}
+
+\begin{excercise}\label{e4}
+Proof that the following univariate functions are in the set of $\mathcal{F}^1(\mathbb{R})$:
+\begin{align}
+f(x) &= e^x,\nonumber \\
+f(x) &= |x|^p,\; p > 1,\nonumber \\
+f(x) &= \frac{x^2}{1 + |x|},\nonumber \\
+f(x) &= |x| - \ln (1 + |x|).\nonumber
+\end{align}
+\end{excercise}
+
+\begin{PROOF}{e4}
+    Since all these functions are univariate functions, so \(\grad f(x) = f'(x)\), \(\innerprod{\grad f(x) - \grad f(y)}{x-y} = (f'(x) - f'(y))(x - y)\) 
+    
+    For \(f(x) = e^x\), \(f'(x) = f''(x) = e^x \ge 0\). Therefore, \(f(x) = e^x\) is convex and in the set \(\mathcal{F}^1(\R)\).
+
+    For \(f(x) = \abs{x}^p, ~p > 1\), obviously, it's continuous in \(\R\). In the meanwhile, 
+    \[
+      f'(x) = \begin{cases}
+        px^{p-1}, &x \ge 0,\\
+        -p(-x)^{p-1}, &x < 0,\\
+      \end{cases}, ~f''(x) = \begin{cases}
+        p(p-1)x^{p-2}, &x \ge 0,\\
+        p(p-1)(-x)^{p-2}, &x < 0,\\
+      \end{cases}.
+    \]
+    We can find that
+    \[
+        \lim_{x\to 0^+}f'(x) = \lim_{x\to 0^-}f'(x) = 0,~ \lim_{x\to 0^+}f''(x) = \lim_{x\to 0^-}f''(x) = 0.
+    \]
+    So it's twice differentiable in \(\R\). Since \(\forall x \in \R,~f''(x) > 0\), \(f(x) = \abs{x}^p,~p > 1\) is convex and in the set \(\mathcal{F}^1(\R)\).
+    
+    For \(f(x) = \frac{x^2}{1+\abs{x}}\), obviously, it's continuous in \(\R\). In the meanwhile,
+    \[
+        f'(x) = \begin{cases}
+            \frac{2x}{1+x} + \left(\frac{x}{1+x}\right)^2, &x >0\\
+            \frac{2x}{1-x} + \left(\frac{x}{1-x}\right)^2, & x< 0\\
+        \end{cases},~
+        f''(x) = \begin{cases}
+            2\left(1 + \frac{x}{1+x}\right)\frac{1}{(1+x)^2}, &x > 0\\
+            2\left(1 - \frac{x}{1-x}\right)\frac{1}{(1-x)^2}, &x < 0\\
+        \end{cases}.
+    \]
+    We can find that
+    \[
+        \lim_{x\to 0^+}f'(x)=\lim_{x\to 0^-}f'(x) = 0,~\lim_{x\to 0^+}f''(x)=\lim_{x\to 0^-}f''(x) = 2.
+    \]
+    
+    So it's twice differentiable in \(\R\). Since \(\forall x \in \R,~f''(x) > 0\), \(f(x) = \frac{x^2}{1+\abs{x}}\) is convex and in the set \(\mathcal{F}^1(\R)\).
+
+    For \(f(x) = \abs{x} - \ln(1 + \abs{x})\), obviously it's continuous in \(\R\). In the meanwhile:
+    \[
+        f'(x) = \begin{cases}
+            1 - \frac{1}{1+x}, &x > 0\\
+            -1 + \frac{1}{1-x}. & x < 0\\
+        \end{cases}, f''(x) = \begin{cases}
+            \frac{1}{(1+x)^2}, &x > 0\\
+            \frac{1}{(1-x)^2}, &x < 0\\
+        \end{cases}.
+    \]
+    We can find that
+    \[
+        \lim_{x\to 0^+}f'(x)=\lim_{x\to 0^-}f'(x) = 0,~\lim_{x\to 0^+}f''(x)=\lim_{x\to 0^-}f''(x) = 1.
+    \]
+    
+    So it's twice differentiable in \(\R\). Since \(\forall x \in \R,~f''(x) > 0\), \(f(x) = \abs{x} - \ln(1 + \abs{x})\) is convex and in the set \(\mathcal{F}^1(\R)\).
+\end{PROOF}
+
+\begin{excercise}\label{e5}
+	Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex and concave. Show that $f$ must be a affine function.
+\end{excercise}
+
+\begin{PROOF}{e5}
+For any $x, y \in \mathbb{R}^n$ and $\alpha \in (0, 1)$:
+\begin{enumerate}
+    \item $f$ is convex $\to$ $f(\alpha x + (1-\alpha)y) \le \alpha f(x) + (1-\alpha) f(y)$;
+    \item $f$ is concave $\to$ $f(\alpha x + (1-\alpha)y) \ge \alpha f(x) + (1-\alpha) f(y)$;
+\end{enumerate}
+Above all, we can get
+\begin{equation}\label{eq:e5}
+    f(\alpha x + (1-\alpha)y) = \alpha f(x) + (1-\alpha) f(y).
+\end{equation}
+According to  Eq.~\ref{eq:e5}, $f$ must be a affine function.
+\end{PROOF}
+
+\begin{excercise}\label{e6}
+	Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex and upper bounded. Show that $f$ must be a constant function.
+\end{excercise}
+
+\begin{PROOF}{e6}
+Suppose that $f$ is not a constant function, i.e., $\exists~x, y \in \mathbb{R}^n~\text{s.t.}~f(y) > f(x)$. Without loss of generality, here we can assume that $x < y$.
+
+In the meanwhile, there must be $z$ that satisfies $z > y$. Since the convexity of $f$, we can get
+\begin{equation}\label{eq:e6}
+\begin{aligned}
+    \frac{f(z)-f(x)}{z - x} \ge \frac{f(y) - f(x)}{y - x} \Rightarrow f(z) \ge f(x) + \frac{f(y) - f(x)}{y - x} (z - x).
+\end{aligned}
+\end{equation}
+Let $z \to +\infty$ in Eq.~\ref{eq:e6}. In this case, $f(z) \to +\infty$, and $f$ is not upper bounded. Thus, if $f$ is convex and upper bounded, $f$ must be a constant function\cite{518103}.
+\end{PROOF}
+
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
