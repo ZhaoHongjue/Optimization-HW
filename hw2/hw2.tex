@@ -21,89 +21,88 @@
 \begin{document}
 \maketitle
 
-\begin{excercise}\label{temp}
-    univariate functions are in the set of \(\mathcal{F}^1(\R)\):
-    \[
-        \begin{aligned}
-            f(x) &= e^x\\
-            f(x) &= \abs{x}^p, p>1\\
-            f(x) &= \frac{x^2}{1+\abs{x}}\\
-            f(x) &= \abs{x} - \ln(1 + \abs{x})
-        \end{aligned}
-    \]
-\end{excercise}
-
-\begin{PROOF}{temp}
-    
-\end{PROOF}
-
 \begin{excercise}\label{e1}
     Prove that
-    \begin{equation}  
-        0 \leq f(\yB) - f(\xB) - \innerprod{\grad f(\xB)}{\yB - \xB} \leq \frac{L}{2} \norm{\xB - \yB}^2\nonumber
+    \begin{equation}\label{e1:res}
+        0 \leq f(\yB) - f(\xB) - \innerprod{\grad f(\xB)}{\yB - \xB} \leq \frac{L}{2} \norm{\xB - \yB}^2
     \end{equation}
     holds if we have
-    \begin{equation} 
+    \begin{equation}\label{e1:cond}
         0 \leq \alpha f(\xB) + (1-\alpha) f(\yB) - f( \alpha \xB + (1-\alpha) \yB) \leq 
-            + \alpha (1-\alpha) \frac{L}{2} \norm{\xB - \yB}^2. \nonumber
+            \alpha (1-\alpha) \frac{L}{2} \norm{\xB - \yB}^2. 
     \end{equation}
 \end{excercise}
 
-\begin{PROOF}{e1}
-    Since we have
-    \begin{equation}\label{eq:e1_convex}
+\begin{PROOF}{e1}  
+    Let \(\beta = 1- \alpha\). So inequality~\ref{e1:cond} can be rewritten as:
+    \begin{equation}\label{e1:proof}
         \begin{aligned}
-            &0 \leq \alpha f(\xB) + (1-\alpha) f(\yB) - f( \alpha \xB + (1-\alpha) \yB),\\
-            \iff &f( \alpha \xB + (1-\alpha) \yB) \le \alpha f(\xB) + (1-\alpha) f(\yB).
-        \end{aligned}
-    \end{equation}    
-    According to Eq.~\ref{eq:e1_convex}, we can obtain that \(f(\cdot)\) is a convex function. Based on the properties of convex function, we can get
-    \begin{equation}\label{eq:e1_left_le}
-        \begin{aligned}
-            &f(\yB) \ge f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB}\\
-            \iff & 0 \le f(\yB) - f(\xB) - \innerprod{\grad f(\xB)}{\yB - \xB}
+            0 \le \beta (f(\yB) - f(\xB)) - [f(\xB + \beta (\yB - \xB) - f(\xB)] \le \beta (1-\beta) \frac{L}{2} \norm{\xB - \yB}^2\\
+            \Rightarrow 0 \le f(\yB) - f(\xB) - \frac{f(\xB + \beta (\yB - \xB) - f(\xB)}{\beta} \le (1-\beta) \frac{L}{2} \norm{\xB - \yB}^2
         \end{aligned}
     \end{equation}
-
-    Since we have
-    \begin{equation}\label{eq:e1_part2}
-        \begin{aligned}
-            &\alpha f(\xB) + (1-\alpha) f(\yB) - f( \alpha \xB + (1-\alpha) \yB) \\
-            &= \alpha (f(\xB) - f(\yB)) + f(\yB) - f( \alpha \xB + (1-\alpha) \yB)
-        \end{aligned}
-    \end{equation}
+    Let \(\beta \to 0\) in inequality~\ref{e1:proof}, we can get inequality~\ref{e1:res}.
 \end{PROOF}
 
 \begin{excercise}\label{e2}
-Prove that
-\begin{equation} \nonumber 
-	f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \frac{1}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2 \leq f(\yB)
-\end{equation}
-holds if we have
-\begin{equation} \nonumber 
-\alpha f(\xB) + (1-\alpha) f(\yB) \geq f(\alpha \xB + (1-\alpha) \yB) \nonumber 
-	+ \frac{\alpha(1-\alpha)}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2, \nonumber
-\end{equation}
+    Prove that
+    \begin{equation}\label{e2:res}
+        f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \frac{1}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2 \leq f(\yB)
+    \end{equation}
+    holds if we have
+    \begin{equation}\label{e2:cond}
+    \alpha f(\xB) + (1-\alpha) f(\yB) \geq f(\alpha \xB + (1-\alpha) \yB) 
+        + \frac{\alpha(1-\alpha)}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2.
+    \end{equation}
 \end{excercise}
 
 \begin{PROOF}{e2}
-	bla.bla... bla bla.. bla.
+    Let \(\beta = 1- \alpha\). So inequality~\ref{e2:cond} can be rewritten as:
+    \begin{equation}\label{e2:proof}
+        \begin{aligned}
+            (1 - \beta) f(\xB) + \beta f(\yB) \ge f(\xB + \beta (\yB - \xB)) + \frac{\beta(1-\beta)}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2 \\
+            \Rightarrow \beta f(\yB) \ge \beta f(\xB) + [f(\xB + \beta (\yB - \xB)) - f(\xB)] + \frac{\beta(1-\beta)}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2 \\
+            \Rightarrow f(\yB) \ge f(\xB) + \frac{f(\xB + \beta (\yB - \xB)) - f(\xB)}{\beta} + \frac{(1-\beta)}{2L} \norm{\grad f(\xB) - \grad f(\yB)}^2 \\
+        \end{aligned}
+    \end{equation}
+    Let \(\beta \to 0\) in inequality~\ref{e2:proof}, we can get inequality~\ref{e2:res}.
 \end{PROOF}
 
 \begin{excercise}\label{e3}
 Let $f$ be continuously differentiable. Prove that both conditions below, holding for all $\xB, \yB \in \R^n$  and $\alpha \in [0,1]$, are equivalent to inclusion $\strongconvextype{\mu}{1}$
-\begin{equation}
-	\innerprod{\grad f(\xB) - \grad f(\yB)}{\xB - \yB} \geq \mu \norm{\xB - \yB}^2,
-\end{equation}
-\begin{align}
-	\alpha f(\xB) + (1-\alpha) f(\yB) &\geq f(\alpha \xB + (1-\alpha) \yB )\nonumber\\
-	&+ \alpha (1-\alpha) \frac{\mu}{2} \norm{\xB - \yB}^2.
-\end{align}
+    \begin{equation}\label{e3:cond1}
+        \innerprod{\grad f(\xB) - \grad f(\yB)}{\xB - \yB} \geq \mu \norm{\xB - \yB}^2,
+    \end{equation}
+    \begin{equation}\label{e3:cond2}
+        \alpha f(\xB) + (1-\alpha) f(\yB) \geq f(\alpha \xB + (1-\alpha) \yB ) + \alpha (1-\alpha) \frac{\mu}{2} \norm{\xB - \yB}^2.
+    \end{equation}
 \end{excercise}
 
 \begin{PROOF}{e3}
-bla.bla... bla bla.. bla.
+    For \(f \in \strongconvextype{\mu}{1}\), it should satisfies
+    \begin{equation}\label{e3:strong_covex}
+        f(\yB) \ge f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \frac{1}{2} \mu\norm{\yB - \xB}^2.
+    \end{equation}
+
+    Let's consider inequality~\ref{e3:cond1}. Here we define \(\xB_\tau = \xB + \tau (\yB - \xB)\)
+    \begin{equation}\label{e3:proof1_1}
+        \begin{aligned}
+            f(\yB) &= f(\xB) + \int_0^1 \innerprod{\grad f(\xB + \tau (\yB - \xB))}{\yB - \xB} \dd \tau\\
+            &= f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \int_0^1 \innerprod{\grad f(\xB + \tau (\yB - \xB)) - \grad f(\xB)}{\yB - \xB} \dd \tau\\
+            &= f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \int_0^1 \frac{1}{\tau} \innerprod{\grad f(\xB_\tau) - \grad f(\xB)}{\xB_\tau - \xB} \dd \tau\\
+            &\overset{(\ref{e3:cond1})}{\ge} f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \int_0^1 \frac{1}{\tau} \mu \norm{\xB_\tau - \xB}^2 \dd \tau\\
+            &= f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \int_0^1 \mu \tau \norm{\yB - \xB}^2 \dd \tau\\
+            &=f(\xB) + \innerprod{\grad f(\xB)}{\yB - \xB} + \frac{1}{2} \mu\norm{\yB - \xB}^2.
+        \end{aligned}
+    \end{equation}
+
+    Let's consider inequality~\ref{e3:cond2} and define \(\beta = 1 - \alpha\). Therefore, inequality~\ref{e3:cond2} can be rewritten as
+    \begin{equation}\label{e3:proof2}
+        \begin{aligned}
+            \beta (f(\yB) - f(\xB)) - [f(\xB + \beta (\yB - \xB) - f(\xB)] \le \beta (1-\beta) \frac{\mu}{2} \norm{\xB - \yB}^2 \\
+            \Rightarrow f(\yB) \ge f(\xB) + \frac{f(\xB + \beta (\yB - \xB) - f(\xB)}{\beta} + (1-\beta)\frac{\mu}{2} \norm{\xB - \yB}^2
+        \end{aligned}
+    \end{equation}
+    Let \(\beta \to 0\) in inequality~\ref{e3:proof2}, we can get inequality~\ref{e3:strong_covex}.
 \end{PROOF}
-
-
 \end{document}
