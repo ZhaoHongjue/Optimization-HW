@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage{hwopt}
+\usepackage{bm}
+
+%%%%%%%%%%%%%%%%%
+%     Title     %
+%%%%%%%%%%%%%%%%%
+\title{Coursework (3) for \emph{Introductory Lectures on Optimization}}
+\author{Your name \\ Your ID}
+\date{Nov. 17, 2022}
+
+\newcommand{\RBB}{\mathbb{R}}
+\newcommand{\xB}{\bm{x}}
+\newcommand{\yB}{\bm{y}}
+\newcommand{\gB}{\bm{g}}
+\newcommand{\pB}{\bm{p}}
+\newcommand{\aB}{\bm{a}}
+\newcommand{\bB}{\bm{b}}
+\newcommand{\domf}{\textrm{dom\;}f}
+\newcommand{\normgen}[1]{\left\| #1 \right\|}
+\newcommand{\normone}[1]{\left\| #1 \right\|_1}
+\newcommand{\SM}{\mathcal{S}}
+\newcommand{\strongconvextype}[2]{\SM_{#1}^{#2}(\RBB^n)}
+\newcommand{\strconvliptype}[4]{\SM_{#1, #2}^{#3,#4}(\RBB^n)}
+
+\begin{document}
+\maketitle
+
+\begin{excercise}\label{e1}
+Prove the following resuls. Define 
+\[
+\psi_{Q}(\gB) = \sup \{ \innerproduct{\gB}{\xB} \mid \xB \in Q  \}.
+\]
+Let $Q_1$ and $Q_2$ be two closed convex sets.
+\begin{enumerate}
+	%
+	\item If for any $\gB \in \textrm{dom}\; \psi_{Q_2}$ we have $\psi_{Q_1} (\gB) \leq \psi_{Q_2} (\gB)$, then $Q_1 \subseteq Q_2$. 
+	%
+	\item Let  $\textrm{dom}\; \psi_{Q_1} = \textrm{dom}\; \psi_{Q_2}$ and for any $\gB \in \textrm{dom}\; \psi_{Q_1}$, we have $\psi_{Q_1} (\gB) = \psi_{Q_2} (\gB)$. Then $Q_1 \equiv Q_2$.
+\end{enumerate}
+\end{excercise}
+
+\begin{PROOF}{e1}
+	\begin{enumerate}
+		\item {
+			Assume that there exists \(\xB_0 \in Q_1\) and \(\xB_0 \notin Q_2\). Since \(Q_2\) is a closed convex set, \(\xB_0\)
+			is strongly separable from \(Q_2\), which means
+			\[
+				\innerproduct{\gB}{\xB} < \gamma  < \innerproduct{\gB}{\xB_0}, \quad \forall \xB \in Q_2, ~\text{and}~ \xB \in Q_1.
+			\]
+			Obviously it is contradict with \(\psi_{Q_1}(\gB) \le \psi_{Q_2}(\gB)\). Thus, in this case we have \(Q_1 \subseteq Q_2\).
+		}
+		\item {
+			Based on the first statement:
+			\begin{enumerate}
+				\item \(\forall g \in \mathrm{dom}~\psi_{Q_1},~\psi_{Q_1}(\gB) = \psi_{Q_2}(\gB) \quad \Longrightarrow \quad Q_1 \subseteq Q_2\);
+				\item \(\forall g \in \mathrm{dom}~\psi_{Q_2},~\psi_{Q_2}(\gB) = \psi_{Q_1}(\gB) \quad \Longrightarrow \quad Q_2 \subseteq Q_1\).
+			\end{enumerate}
+			Above all, we can get \(Q_1 \equiv Q_2\).
+		}
+	\end{enumerate}
+	
+\end{PROOF}
+
+\begin{excercise}\label{e2}
+Prove the following result.
+Let $f$ be a closed convex function. For any $\xB_0 \in \textrm{int}(\domf)$ and $\pB \in \RBB^n$ we have
+\begin{equation}
+	f'(\xB_0; \pB) = \max \{ \innerproduct{\gB}{\pB} \mid \gB \in \partial f(\xB_0) \}.\nonumber
+\end{equation}
+\end{excercise}
+
+\begin{PROOF}{e2}
+	According to related definitions:
+	\[
+		f'(\xB_0; \pB) = \lim_{\alpha \to 0} \frac{1}{\alpha} [f(\xB_0 + \alpha\pB) - f(\xB_0)].
+	\]
+	and
+	\[
+		f(\yB) \ge f(\xB_0) + \innerproduct{\gB}{\yB - \xB_0}, \quad \forall \gB \in \partial f(\xB_0).
+	\]
+	Obviously, we have
+	\[
+		\begin{aligned}
+			f'(\xB_0, \pB) &= \lim_{\alpha \to 0} \frac{1}{\alpha} [f(\xB_0 + \alpha\pB) - f(\xB_0)]\\
+			&\ge \lim_{\alpha \to 0} \frac{1}{\alpha} \innerproduct{\gB}{\alpha \pB} = \innerproduct{\gB}{\pB}.
+		\end{aligned}	
+	\]
+	Here \(\gB\) is from \(\partial f(\xB_0)\). Therefore, the subdifferential of the function \(f'(\xB;\pB)\) at 
+	\(\pB = 0\) is not empty and \(\partial f(\xB_0) \subseteq \partial_2 f'(\xB_0; 0)\).
+
+	Since \(f'(\xB;\pB)\) is convex in \(\pB\), we have
+	\[
+		f(\yB) \ge f(\xB_0) + f'(\xB_0; \yB - \xB_0) \ge f(\xB_0) + \innerproduct{\gB}{\yB - \xB_0}.	
+	\]
+	where \(\gB \in \partial_2 f'(\xB_0;0) \subseteq \partial f(\xB_0)\) and we can get \(\partial f(\xB_0) = \partial_2 f(\xB;0)\).
+
+	Consider \(\gB \in \partial_2 f'(\xB_0;0)\). Thus for \(\tau >0\)
+	\[
+		\tau f'(\xB_0; \bm v) = f'(\xB; \tau\bm v) \ge f'(\xB_0; \pB) + \innerproduct{\gB}{\tau \bm v - \pB}.
+	\]
+	Considering \(\tau \to \infty\) we get \(f'(\xB_0; \pB) - \innerproduct{\gB}{\pB} \le 0\). Thus we conclude that \(\innerproduct{\gB}{\pB} = f'(\xB;\pB)\).
+\end{PROOF}
+
+\begin{excercise}\label{e3}
+Let $f$ be closed and convex. Assume that it is differentiable on its domain. Then 
+$\partial f(\xB) = \{ \nabla  f(\xB) \}$
+for any $\xB \in \textrm{int}(\domf)$.
+\end{excercise}
+
+\begin{PROOF}{e3}
+	For any direction \(p\), we have
+	\[
+		f'(\xB; \pB) = \innerproduct{\nabla f(\xB)}{\pB}.	
+	\]
+	Since \(f(\xB + \pB) \ge f(\xB) + f'(\xB; \pB) \ge f(\xB) + \innerproduct{\nabla f(\xB)}{\pB}\),
+	we can get \(\nabla f(\xB) \in \partial f(\xB)\). In the meanwhile
+	\[
+		f'(\xB; \pB) = \max \{\innerproduct{\gB}{\pB} \mid \gB \in \partial f(\xB_0)\} = \innerproduct{\nabla f(\xB)}{\pB}
+	\]
+	Similarly, according to the statement in Excercise.~\ref{e1}, we can get \(\partial f(\xB) = \{\nabla f(\xB)\}\).
+\end{PROOF}
+
+\begin{excercise}\label{e4}
+	Let $\Delta$ be a set and $f(\xB) = \sup \{ \phi (\yB,\xB) \mid \yB \in \Delta \}$. Suppose that for any fixed $\yB \in \Delta$ the function $\phi (\yB, \xB)$ is closed and convex in $\xB$. Then $f(\xB)$ is closed convex.
+	
+	Moreover, for any $\xB$ from
+	\begin{equation}
+		\domf = \{ \xB \in \RBB^n \mid \exists \gamma : \phi (\yB,\xB) \leq \gamma, \;\; \forall \yB \in \Delta \}\nonumber
+	\end{equation}
+	we have
+	\begin{equation}
+		\partial f(\xB) \supseteq \textrm{Conv} \{ \partial \phi_{\xB} (\yB, \xB) \mid \yB \in I(\xB) \},\nonumber
+	\end{equation}
+	where $I(\xB) = \{\yB \mid \phi(\yB, \xB) = f(\xB)\}$.
+\end{excercise}
+
+\begin{PROOF}{e4}
+	Here we define 
+	\[
+		\hat{Q} = \left\{ \xB \in Q \mid \sup_{\yB \in \Delta} \phi(\xB, \yB) < +\infty \right\}.	
+	\]
+	According to last equation, it is without any doubt that \(f(\xB) < +\infty~\forall \xB \in \hat{Q}\) and we can conclude that \(Q \in \domf\). 
+	In addition, it is obvious that \(\xB, t \in \mathrm{epi}_Q(f)\) if and only if
+	\[
+		\xB \in Q, \quad t \ge \phi(\xB, \yB), \quad \forall \yB \in \Delta.	
+	\]
+	This means that 
+	\[
+		\mathrm{epi}_Q(f) = \bigcap_{\yB \in \Delta} \mathrm{epi}_Q(\phi(\cdot, \yB)).	
+	\]
+	Since each set \(\mathrm{epi}_Q(\phi(\cdot, \yB))\) is closed and convex, \(\mathrm{epi}_Q(f)\) is also closed and convex. Thus, \(f\) is closed and convex on \(\hat{Q}\).
+
+	In the meanwhile, for all \(\xB \in \hat{Q}\), \(\yB_0 \in I(\xB_0)\), and \(\gB_0 \in \partial_{Q,\xB} \phi(\xB_0, \yB_0)\), we have
+	\[
+		f(\xB) \ge \phi(\xB, \yB_0) \ge \phi(\xB_0, \yB_0) + \innerproduct{\gB_0}{\xB - \xB_0} = f(\xB_0) +  \innerproduct{\gB_0}{\xB - \xB_0}	
+	\]
+	Therefore, we can prove the second statement.
+\end{PROOF}
+
+\begin{excercise}\label{e5}
+Caculate the subdifferentials of the following functions.
+\begin{enumerate}
+	\item $f(\xB) = |\xB|, \xB \in \RBB^1$.
+	\item $f(\xB) = \sum_{i=1}^{m} | \innerproduct{\aB_i}{\xB} - \bB_i|$.
+	\item $f(\xB) = \max_{1 \leq i \leq n} \xB^{(i)}$.
+	\item $f(\xB) = \normgen{\xB}$.
+	\item $f(\xB) = \normone{\xB} = \sum_{i=1}^{n} |\xB^{(i)}|$.
+\end{enumerate}
+\end{excercise}
+
+\begin{SOLUTION}{e4}
+	\begin{enumerate}
+		\item {
+			\(f(\xB) = |\xB| = \max\{-\xB, \xB\} \quad \Rightarrow \quad \partial f(\xB) = [-1, 1]\).
+		}
+		\item {
+			Here we define 
+			\[
+				\begin{aligned}
+					I_+(\xB) &= \{ i \mid \innerproduct{\aB_i}{\xB_i} - \bB_i > 0 \},\\
+					I_-(\xB) &= \{ i \mid \innerproduct{\aB_i}{\xB_i} - \bB_i < 0 \},\\
+					I_0(\xB) &= \{ i \mid \innerproduct{\aB_i}{\xB_i} - \bB_i = 0 \}.
+				\end{aligned}	
+			\]
+			Then we have
+			\[
+				\partial f(\xB)	= \sum_{i \in I_+(\xB)} \bm{a}_i - \sum_{i \in I_-(\xB)} \bm{a}_i + \sum_{i \in I_0(\xB)} [-\bm{a}_i, \bm{a}_i].
+			\]
+		}
+		\item {
+			Here we define \(I(\xB) = \{ i \mid \xB^{(i)} = f(\xB) \}\). Then
+			\[
+				\partial f(\xB) = \begin{cases}
+					\mathrm{Conv} \{ \bm{e}_i \mid 1 \le i \le n \}, & \xB = 0,\\
+					\mathrm{Conv} \{ \bm{e}_i \mid i \in I(\xB) \}, & \xB \ne 0.	
+				\end{cases}
+			\]
+		}
+		\item {
+			\[
+				\partial f(\xB)	= \begin{cases}
+					B_2(0, 1) = \{ \xB \in \RBB^n \mid \|\xB\| \le 1 \}, &\xB = 0,\\
+					\{\xB / \|\xB\|\}, &\xB \ne 0.
+				\end{cases}
+			\]
+		}
+		\item {
+			Here we define 
+			\[
+				\begin{aligned}
+					I_+(\xB) &= \{ i \mid \xB^{(i)} > 0 \},\\
+					I_-(\xB) &= \{ i \mid \xB^{(i)} < 0 \},\\
+					I_0(\xB) &= \{ i \mid \xB^{(i)} = 0 \}.
+				\end{aligned}	
+			\]
+			Then we have
+			\[
+				\partial f(\xB)	= \begin{cases}
+					B_\infty(0, 1) = \{ \xB \in \RBB^n \mid \max_{1 \le i \le n} |\xB^{(i)}| \le 1 \}, &\xB = 0,\\
+					\sum_{i \in I_+(\xB)} \bm{e}_i - \sum_{i \in I_-(\xB)} \bm{e}_i + \sum_{i \in I_0(\xB)} [-\bm{e}_i, \bm{e}_i], &\xB \ne 0.
+				\end{cases}
+			\]
+		}
+	\end{enumerate}
+\end{SOLUTION}
+
+\end{document}
