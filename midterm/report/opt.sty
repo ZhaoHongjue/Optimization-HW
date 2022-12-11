@@ -1,0 +1,55 @@
+\ProvidesPackage{opt}
+
+%% Packages used in tex notes
+%% ----------------------------------
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{physics}
+\RequirePackage{bm}
+\RequirePackage{graphicx}
+\RequirePackage{enumitem}
+\RequirePackage{hyperref}
+\RequirePackage[ruled]{algorithm2e}
+\RequirePackage{lipsum}
+\RequirePackage{setspace}
+\RequirePackage[
+    hmargin=1.25in,
+    vmargin=0.8in
+]{geometry}
+\RequirePackage{chngcntr}
+\RequirePackage{fancyhdr}
+
+
+%% Related Commands
+%% ----------------------------------
+\pagestyle{fancy}
+\fancyhead{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+
+\setlist[enumerate]{itemsep = 0.8pt}
+\setlist[itemize]{itemsep = 0.8pt}
+\raggedbottom
+\linespread{1.2} 
+\counterwithin{equation}{section}
+
+\SetKwInOut{KwIn}{\textbf{Input}}
+\SetKwInOut{KwOut}{\textbf{Output}}
+\SetKwComment{KwComment}{/*}{*/}
+
+\newcommand{\yourname}{Hongjue Zhao} 
+\newcommand{\yournetid}{3190104515}
+\newcommand{\youremail}{hongjue0830@zju.edu.cn}
+\newcommand{\papertitle}{Optimization Midterm}
+\newcommand{\authorship}{Hongjue Zhao}
+
+%% Math Commands
+%% -----------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\xB}{\bm{x}}
+\newcommand{\yB}{\bm{y}}
+\newcommand{\wB}{\bm{w}}
+\newcommand{\linearprod}[2]{\left\langle #1,#2 \right\rangle}
+\newcommand{\RSS}{\mathrm{RSS}}
+\newcommand{\MSE}{\mathrm{MSE}}
