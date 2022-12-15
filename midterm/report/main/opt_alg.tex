@@ -2,6 +2,34 @@
 
 \subsection{Gradient Method}
 
+\begin{algorithm}[!htbp]
+    \caption{Gradient Method}\label{alg:gradient-method}
+    \KwIn{Objective function \(f(\xB)\), gradient function \(\gB(\xB) = \grad f(\xB)\) and accuracy \(\varepsilon\).}
+    \KwOut{Local minimum of \(f(\xB)\): \(\xB\).}
+    \textbf{Initialization}: Set \(k = 0\) and initialize \(\xB^{(0)} \in \R^n\). \\
+    \While{True} {
+        Calculate \(f(\xB^{(k)})\). \\
+        Calculate gradient \(\gB_k = \gB(\xB^{(k)})\).\\
+        \eIf {\(\norm{\gB_k} < \varepsilon\)} {
+            Stop iteration and Let \(\xB^* = \xB^{(k)}\).
+        }{
+            Let \(\pB = -\gB(\xB^{(k)})\)
+        }
+    }
+    
+    % \textbf{Initialization}: Set \(k = 0\), \(\mathscr{I}_{-1} = \emptyset\). Here \(k\) is the iteration counter and \(\mathscr{I}_k\) is the accumulated \emph{informational set}.\\
+    % \While{True}{
+    %     Call oracle \(\mathcal{O}\) at point \(\bm{x}_k\). \\
+    %     Update the informational set: \(\mathscr{I}_k = \mathscr{I}_{k-1} \cup (\bm{x}_k, \mathcal{O}(x_k))\). \\
+    %     Apply the rules of method \(\mathscr{M}\) to \(\mathscr{I}_k\) and generate a new point \(\bm{x}_{k+1}\). \\
+    %     \eIf{\(\mathscr{I}_\epsilon\)}{
+    %         Form output \(\solution\).
+    %     }{
+    %         \(k:= k+1\).
+    %     }
+    % }
+\end{algorithm}
+
 \subsection{Conjugate Gradient Method}
 
 \subsection{quasi-Newton Method}

@@ -4,13 +4,14 @@
 #include <string>
 #include <vector>
 #include <eigen3/Eigen/Dense>
-#include "Dataset.h"
+#include "Data.h"
 using namespace std;
+using namespace Eigen;
 
-Eigen::MatrixXd _get_mat_X(vector<vector<double>> X) {
+MatrixXd _get_mat_X(vector<vector<double>> X) {
     int num_example = X.size();
     int num_feature = X[0].size();
-    Eigen::MatrixXd X_mat(num_example, num_feature);
+    MatrixXd X_mat(num_example, num_feature);
     for (int i = 0; i < num_example; i++) {
         for (int j = 0; j < num_feature; j++) {
             X_mat(i, j) = X[i][j];
@@ -19,16 +20,16 @@ Eigen::MatrixXd _get_mat_X(vector<vector<double>> X) {
     return X_mat;
 }
 
-Eigen::VectorXd _get_vec_Y(vector<double> Y) {
+VectorXd _get_vec_Y(vector<double> Y) {
     int num_example = Y.size();
-    Eigen::VectorXd Y_vec(num_example);
+    VectorXd Y_vec(num_example);
     for (int i = 0; i < num_example; i++) {
         Y_vec(i) = Y[i];
     }
     return Y_vec;
 }
 
-void Dataset::read_data(string ad) {
+void Data::read_data(string ad) {
     // open the data txt file
     ifstream datafile;
     datafile.open(ad);
@@ -74,13 +75,13 @@ void Dataset::read_data(string ad) {
     }
 }
 
-Eigen::MatrixXd Dataset::calc_ana_ridge_solution(double lambda) {
+MatrixXd Data::calc_ana_solution(double lambda) {
     int X_rows = this->X.rows();
     int X_cols = this->X.cols();
-    Eigen::MatrixXd X = Eigen::MatrixXd::Constant(X_rows, X_cols + 1, 1);
+    MatrixXd X = MatrixXd::Constant(X_rows, X_cols + 1, 1);
     X.block(0, 1, X_rows, X_cols) = this->X;
-    Eigen::MatrixXd XTX = X.transpose() * X;
-    Eigen::MatrixXd temp = (XTX + lambda * Eigen::MatrixXd::Identity(X_cols + 1, X_cols+ 1));
-    Eigen::MatrixXd weights = temp.inverse() * X.transpose() * this->Y;
+    MatrixXd XTX = X.transpose() * X;
+    MatrixXd temp = (XTX + lambda * MatrixXd::Identity(X_cols + 1, X_cols+ 1));
+    MatrixXd weights = temp.inverse() * X.transpose() * this->Y;
     return weights;
 }
