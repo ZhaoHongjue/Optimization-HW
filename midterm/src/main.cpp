@@ -9,31 +9,45 @@
 // #include "Data.h"
 // #include "LinearModel.h"
 #include "Optimizer.h"
-// #include "utils.h"
+#include "utils.h"
 using namespace std;
 using namespace Eigen;
 
 int main()
 {   
     cout << "<===================Start===================>" << endl;
-    double lambda = 0.01;
-	Data data;
-    data.read_data("./data/housing.txt");
-    auto ideal_weights = data.calc_ana_solution(lambda);
-    cout << ideal_weights << endl;
-    cout << _get_gradient(data.get_X(), data.get_Y(), ideal_weights, lambda).norm() << endl;
-    cout << "--------------------------------------------" << endl;
+    double lambda = 10;
+    double lr = 1;
+    double eps = 1e-9;
+    
+    Data data;
+    // data.read_data("./data/housing.txt");
+    data.read_data("./data/bodyfat_scale.txt");
+    LinearModel lin(data);
+    // cout << lin.hess(lambda) << endl;
+    
+    // GradDescent GD(lin, lr, lambda);
+    // GD.optimize(eps, 0);
 
-    LinearModel lin(data.get_feature_num());
+    quasiNetwon qN(lin, lr, lambda);
+    qN.optimize(eps, 2);
 
-    GradDescent GD(0.00001, lambda);
-    GD.optimize(lin, data, 1e-9);
+    // ConjGrad CG(lin, lr, lambda);
+    // CG.optimize(eps, 0);
 
-    // ConjGrad CG(0.0000001, lambda);
-    // CG.optimize(lin, data, 1e-9, 2);
+    // double h = GD.Armijo(-1*lin.gradient(lambda), lr, 0.5, 1);
+    // cout << h << endl;
+    // double lambda = 0.0;
+    // double lr = 0.0001;
+    // 
+    // VectorXd w1 = lin.get_weights();
 
-    // quasiNetwon qN(0.000001, lambda);
-    // qN.optimize(lin, data, 1e-3, 1);
+    // GradDescent GD(lin, lr, lambda);
+    // GD.optimize(data, 1e-3);
+
+    
+
+    
     
     // 
     // cout << "Loss with lambda=" << lambda << ": " << _calc_loss(data.get_Y(), Y_hat) << endl;

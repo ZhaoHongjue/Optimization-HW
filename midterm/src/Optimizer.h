@@ -8,38 +8,38 @@
 using namespace std;
 using namespace Eigen;
 
-class GradDescent {
-private:
+class Optimizer {
+protected:
+    LinearModel lin;
     double lr;
-    double lambda;
+    double w_decay;
 public:
-    GradDescent(double lr, double lambda): lr(lr), lambda(lambda){};
-    ~GradDescent() {};
-    void optimize(LinearModel& lin, Data data, double eps);
+    Optimizer(LinearModel lin, double lr, double w_decay): lin(lin), lr(lr), w_decay(w_decay) {};
+    virtual ~Optimizer() {};
+    virtual void optimize(double eps, int mode) = 0;
+    double get_step_size(const VectorXd& d);
 };
 
-class ConjGrad {
-private:
-    double lr;
-    double lambda;
+class GradDescent : public Optimizer {
 public:
-    ConjGrad(double lr, double lambda): lr(lr), lambda(lambda){};
-    ~ConjGrad() {};
-    void optimize(LinearModel& lin, Data data, double eps, int mode);
+    GradDescent(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    void optimize(double eps, int mode);
+};
+
+class ConjGrad : public Optimizer {
+public:
+    ConjGrad(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    void optimize(double eps, int mode);
     
     double Dai_Yuan(const VectorXd& grad1, const VectorXd& grad2, const VectorXd& p);
     double FR(const VectorXd& grad1, const VectorXd& grad2);
     double PR(const VectorXd& grad1, const VectorXd& grad2);
 };
 
-class quasiNetwon {
-private:
-    double lr;
-    double lambda;
+class quasiNetwon : public Optimizer {
 public:
-    quasiNetwon(double lr, double lambda): lr(lr), lambda(lambda){};
-    ~quasiNetwon() {};
-    void optimize(LinearModel& lin, Data data, double eps, int mode);
+    quasiNetwon(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    void optimize(double eps, int mode);
 
     MatrixXd Rank1(const MatrixXd& H, const VectorXd& delta, const VectorXd& gamma);
     MatrixXd DFP(const MatrixXd& H, const VectorXd& delta, const VectorXd& gamma);

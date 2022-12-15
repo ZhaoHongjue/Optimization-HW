@@ -80,7 +80,7 @@ and
 \begin{equation}\label{eq:ridge-derivative}
     \begin{aligned}
         \pdv{\RSS}{\wB} &= -2\bm{X}^\top (\yB - \bm{Xw}) + 2\lambda\wB\\
-        \pdv{\RSS}{\wB}{\wB^\top} &= 2\bm{X}^\top\bm{X} + 2\lambda.
+        \pdv{\RSS}{\wB}{\wB^\top} &= 2\bm{X}^\top\bm{X} + 2\lambda \bm{I}.
     \end{aligned}
 \end{equation}
 Let the first derivative in Eq (\ref{eq:ridge-derivative}) be zero, then the ridge regression solution can be expressed as 

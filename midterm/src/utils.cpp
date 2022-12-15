@@ -20,7 +20,7 @@ double _calc_loss(const VectorXd& Y, const VectorXd& Y_hat) {
 VectorXd _get_gradient(const MatrixXd& X, const VectorXd& Y, const VectorXd& weights, double lambda) {
     int num_example = X.rows();
     auto X_extended = _get_extended_X(X);
-    auto pMSE = -2.0 * X_extended.transpose() * (Y - X_extended * weights);
+    auto pMSE = -2.0 / num_example * X_extended.transpose() * (Y - X_extended * weights);
     auto pPenalty = 2 * lambda * weights;
     return pMSE + pPenalty;
 }

@@ -7,74 +7,61 @@
 using namespace std;
 using namespace Eigen;
 
-void GradDescent::optimize(LinearModel& lin, Data data, double eps) {
-    auto X = data.get_X();
-    auto Y = data.get_Y();
-    auto w1 = lin.get_weights();
-    auto grad1 = _get_gradient(X, Y, w1, this->lambda);
-    int epoch = 0;
+double Optimizer::get_step_size(const VectorXd& d) {
+    double num = this->lin.gradient(this->w_decay).dot(d);
+    double den = (this->lin.hess(this->w_decay) * d).dot(d);
+    return -1 * num / den;
+}
 
-    while (epoch < 100) {
-        auto w2 = w1 - (this->lr / sqrt(epoch + 1))  * grad1;
-        auto grad2 = _get_gradient(X, Y, w2, this->lambda);
-        lin.set_weights(w2);
-        auto Y_hat = lin.forward(X);
-        double loss = _calc_loss(Y_hat, Y);
-        cout << "epoch: " << epoch <<",\tgrad norm: " << grad2.norm() << ",\tloss: " << loss << endl;
-        if (grad2.norm() < eps) {
-            lin.set_weights(w2);
+// alabone: 9.2e-5
+// housing_scale: 3e-4
+// bodyfat: 1.2e-3
+void GradDescent::optimize(double eps, int mode) {
+    int epoch = 0;
+    while(1) {
+        VectorXd d = -1 * this->lin.gradient(this->w_decay);
+        double h = get_step_size(d);
+        lin.set_weights(this->lin.get_weights() + h * d);
+        double grad_norm = lin.gradient(this->w_decay).norm();
+        cout << "epoch: " << epoch << ",\th: " << h << ",\tgrad norm: " << grad_norm << endl;
+        if (grad_norm < eps) {
             break;
         }
-        w1 = w2;
-        grad1 = grad2;
         epoch += 1;
     }
-
-    // auto X = data.get_X();
-    // auto Y = data.get_Y();
-    // auto last_Y_hat = lin.forward(X);
-    // int epoch = 0;
-    // while (epoch < 100) {
-    //     auto w1 = lin.get_weights();
-    //     auto grad = _get_gradient(X, Y, w1, this->lambda);
-    //     if (grad.norm() < eps) {break;}
-    //     auto w2 = w1 - this->lr * grad;
-    //     lin.set_weights(w2);
-    //     auto Y_hat = lin.forward(X);
-    //     auto loss = _calc_loss(Y, Y_hat);
-    //     cout << "epoch: " << epoch << ",\tloss: " << loss << ",\tgrad norm:" <<grad.norm() << endl; 
-    //     if ((Y_hat - last_Y_hat).norm() < eps || (w2 - w1).norm() < eps) {break;}
-    //     last_Y_hat = Y_hat;
-    //     epoch += 1;
-    // }
 }
+
 /*####################################################################*/
 /*                    Conjugate Gradient Method                       */
 /*####################################################################*/
 
-void ConjGrad::optimize(LinearModel& lin, Data data, double eps, int mode) {
-    auto X = data.get_X();
-    auto Y = data.get_Y();
+void ConjGrad::optimize(double eps, int mode) {
     auto w1 = lin.get_weights();
-    auto grad1 = _get_gradient(X, Y, w1, this->lambda);
-    auto p = grad1;
+    auto grad1 = lin.gradient(this->w_decay);
+    auto d = grad1;
     double beta = 0;
     int epoch = 0;
 
-    while (epoch < 100) {
-        auto w2 = w1 - this->lr * p;
-        auto grad2 = _get_gradient(X, Y, w2, this->lambda);
-        cout << "epoch: " << epoch <<",\tgrad norm: " << grad2.norm() << endl;
+    while (1) {
+        double h = get_step_size(-1 * d);
+        lin.set_weights(this->lin.get_weights() - h * d);
+        auto grad2 = lin.gradient(this->w_decay);
+        cout << "epoch: " << epoch << ",\th: " << h << ",\tgrad norm: " << grad2.norm() << endl;
         if (grad2.norm() < eps) {
-            lin.set_weights(w2);
             break;
         }
 
-        if (mode == 0) {beta = Dai_Yuan(grad1, grad2, p);}
-        else if (mode == 1) {beta = FR(grad1, grad2);}
-        else {beta = PR(grad1, grad2);}
-        p = grad2 - beta * p;
-        w1 = w2;
+        if (mode == 0) {
+            beta = Dai_Yuan(grad1, grad2, d);
+        }
+        else if (mode == 1) {
+            beta = FR(grad1, grad2);
+        }
+        else {
+            beta = PR(grad1, grad2);
+        }
+
+        d = grad2 - beta * d;
         grad1 = grad2;
         epoch += 1;
     }
@@ -105,32 +92,36 @@ double ConjGrad::PR(const VectorXd& grad1, const VectorXd& grad2) {
 /*                       quasi-Newton Method                          */
 /*####################################################################*/
 
-void quasiNetwon::optimize(LinearModel& lin, Data data, double eps, int mode) {
-    auto X = data.get_X();
-    auto Y = data.get_Y();
-    auto w1 = lin.get_weights();
-    auto grad1 = _get_gradient(X, Y, w1, this->lambda);
-    MatrixXd H = MatrixXd::Identity(w1.rows(), w1.rows());
+void quasiNetwon::optimize(double eps, int mode) {
     int epoch = 0;
-    while (epoch < 100) {
-        auto p = H * grad1;
-        auto w2 = w1 - this->lr * p;
-        auto grad2 = _get_gradient(X, Y, w2, this->lambda);
-        cout << "epoch: " << epoch <<",\tgrad norm: " << grad2.norm() << endl;
-        if (grad2.norm() < eps) {
-            lin.set_weights(w2);
-            break;
-        }
+    int num_feature = this->lin.get_X().cols();
+    MatrixXd H = MatrixXd::Identity(num_feature + 1, num_feature + 1);
+    VectorXd w1 = lin.get_weights();
+    VectorXd grad1 = lin.gradient(this->w_decay);
+
+    while (1) {
+        VectorXd d = -1 * H * grad1;
+        double h = get_step_size(d);
+        auto w2 = w1 + h * d;
+        lin.set_weights(w2);
+        auto grad2 = lin.gradient(this->w_decay);
+        cout << "epoch: " << epoch << ",\th: " << h << ",\tgrad norm: " << grad2.norm() << endl;
+        if (grad2.norm() < eps) {break;}
 
         VectorXd gamma = grad2 - grad1;
         VectorXd delta = w2 - w1;
+        if (mode == 0) {
+            H = H + Rank1(H, delta, gamma);
+        }
+        else if (mode == 1) {
+            H = H + DFP(H, delta, gamma);
+        }
+        else {
+            H = H + BFGS(H, delta, gamma);
+        }
 
-        if (mode == 0) {H = Rank1(H, delta, gamma);}
-        else if (mode == 1) {H = DFP(H, delta, gamma);}
-        else {H = BFGS(H, delta, gamma);}
-
-        w1 = w2;
         grad1 = grad2;
+        w1 = w2;
         epoch += 1;
     }
 }
