@@ -18,16 +18,28 @@ public:
     ~LinearModel() {};
 
     VectorXd forward(const MatrixXd& X);
-    VectorXd forward() {return forward(get_X());};
+    VectorXd forward_train() {return forward(get_train_X());};
+    VectorXd forward_val() {return forward(get_val_X());};
+
     VectorXd gradient(double lambda);
     MatrixXd hess(double lambda);
-    MatrixXd get_X() {return this->data.get_X();};
-    VectorXd get_Y() {return this->data.get_Y();};
+
+    MatrixXd get_train_X() {return this->data.get_train_X();};
+    VectorXd get_train_Y() {return this->data.get_train_Y();};
+    MatrixXd get_val_X() {return this->data.get_val_X();};
+    VectorXd get_val_Y() {return this->data.get_val_Y();};
+    double train_loss() {return _calc_loss(get_train_Y(), forward_train());};
+    double val_loss() {return _calc_loss(get_val_Y(), forward_val());};
+    
     VectorXd get_weights() {return this->weights;};
     void set_weights(VectorXd weights) {this->weights = weights;};
     void set_ideal_weights(double w_decay) {
         this->weights = data.calc_ana_solution(w_decay);
     };
+
+    void set_data(const Data& data) {
+        this->data = data;
+    }
 };
 
 #endif

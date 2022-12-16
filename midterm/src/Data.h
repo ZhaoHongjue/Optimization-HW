@@ -9,16 +9,19 @@ using namespace Eigen;
 
 class Data {
 private:
-    MatrixXd X;
-    VectorXd Y;
+    MatrixXd total_X;
+    VectorXd total_Y;
+    double split_rate;
 public:
+    Data(double split_rate): split_rate(split_rate) {};
     void read_data(string ad);
     MatrixXd calc_ana_solution(double lambda);
-    int get_feature_num() {return X.cols();};
-    MatrixXd get_X() {return this->X;};
-    VectorXd get_Y() {return this->Y;};
-    void print_X() {cout << this->X << endl;};
-    void print_Y() {cout << this->Y << endl;};
+
+    int get_feature_num() {return this->total_X.cols();};
+    MatrixXd get_train_X();
+    VectorXd get_train_Y();
+    MatrixXd get_val_X();
+    VectorXd get_val_Y();
 };
 
 #endif

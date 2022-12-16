@@ -12,8 +12,8 @@ LinearModel::LinearModel(const Data& data): data(data) {
 }
 
 VectorXd LinearModel::gradient(double lambda) {
-    auto X = this->data.get_X();
-    auto Y = this->data.get_Y();
+    auto X = this->data.get_train_X();
+    auto Y = this->data.get_train_Y();
     auto X_extended = _get_extended_X(X);
     auto pMSE = -2.0 * X_extended.transpose() * (Y - X_extended * weights);
     auto pPenalty = 2 * lambda * weights;
@@ -21,7 +21,7 @@ VectorXd LinearModel::gradient(double lambda) {
 }
 
 MatrixXd LinearModel::hess(double lambda) {
-    auto X = this->data.get_X();
+    auto X = this->data.get_train_X();
     MatrixXd X_extended = _get_extended_X(X);
     int cols = X_extended.cols();
     MatrixXd XTX = X_extended.transpose() * X_extended;

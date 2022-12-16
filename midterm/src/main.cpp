@@ -6,10 +6,9 @@
 #include <eigen3/Eigen/Dense>
 
 #include "Data.h"
-// #include "Data.h"
-// #include "LinearModel.h"
+#include "LinearModel.h"
 #include "Optimizer.h"
-#include "utils.h"
+#include "Recorder.h"
 using namespace std;
 using namespace Eigen;
 
@@ -19,18 +18,20 @@ int main()
     double lambda = 10;
     double lr = 1;
     double eps = 1e-9;
+    double split_rate = 0.8;
     
-    Data data;
+    Data data(split_rate);
     // data.read_data("./data/housing.txt");
     data.read_data("./data/bodyfat_scale.txt");
     LinearModel lin(data);
     // cout << lin.hess(lambda) << endl;
     
-    // GradDescent GD(lin, lr, lambda);
-    // GD.optimize(eps, 0);
+    GradDescent GD(lin, lr, lambda);
+    Recorder r1("bodyfat.csv");
+    GD.optimize(r1, eps, 0);
 
-    quasiNetwon qN(lin, lr, lambda);
-    qN.optimize(eps, 2);
+    // quasiNetwon qN(lin, lr, lambda);
+    // qN.optimize(eps, 2);
 
     // ConjGrad CG(lin, lr, lambda);
     // CG.optimize(eps, 0);

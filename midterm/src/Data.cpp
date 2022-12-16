@@ -65,8 +65,8 @@ void Data::read_data(string ad) {
         X_STL.push_back(X_line);
     }
 
-    this->X = _get_mat_X(X_STL);
-    this->Y = _get_vec_Y(Y_STL);
+    this->total_X = _get_mat_X(X_STL);
+    this->total_Y = _get_vec_Y(Y_STL);
 
     // close the data txt file
     if (datafile.is_open())
@@ -76,12 +76,32 @@ void Data::read_data(string ad) {
 }
 
 MatrixXd Data::calc_ana_solution(double lambda) {
-    int X_rows = this->X.rows();
-    int X_cols = this->X.cols();
+    int X_rows = this->total_X.rows();
+    int X_cols = this->total_X.cols();
     MatrixXd X = MatrixXd::Constant(X_rows, X_cols + 1, 1);
-    X.block(0, 1, X_rows, X_cols) = this->X;
+    X.block(0, 1, X_rows, X_cols) = this->total_X;
     MatrixXd XTX = X.transpose() * X;
     MatrixXd temp = (XTX + lambda * MatrixXd::Identity(X_cols + 1, X_cols+ 1));
-    MatrixXd weights = temp.inverse() * X.transpose() * this->Y;
+    MatrixXd weights = temp.inverse() * X.transpose() * this->total_Y;
     return weights;
+}
+
+MatrixXd Data::get_train_X() {
+    int rows_idx = floor(split_rate * total_X.rows()) - 1;
+    return total_X(seq(0, rows_idx), seq(0, total_X.cols()-1));
+}
+
+VectorXd Data::get_train_Y() {
+    int rows_idx = floor(split_rate * total_Y.rows()) - 1;
+    return total_Y(seq(0, rows_idx), 0);
+}
+
+MatrixXd Data::get_val_X() {
+    int rows_idx = floor(split_rate * total_X.rows());
+    return total_X(seq(rows_idx, total_X.rows()-1), seq(0, total_X.cols()-1));
+}
+
+VectorXd Data::get_val_Y() {
+    int rows_idx = floor(split_rate * total_Y.rows());
+    return total_Y(seq(rows_idx, total_X.rows()-1), 0);
 }

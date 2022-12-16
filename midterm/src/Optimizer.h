@@ -4,6 +4,7 @@
 #include <iostream>
 #include <eigen3/Eigen/Dense>
 #include "LinearModel.h"
+#include "Recorder.h"
 #include "Data.h"
 using namespace std;
 using namespace Eigen;
@@ -16,20 +17,20 @@ protected:
 public:
     Optimizer(LinearModel lin, double lr, double w_decay): lin(lin), lr(lr), w_decay(w_decay) {};
     virtual ~Optimizer() {};
-    virtual void optimize(double eps, int mode) = 0;
+    virtual void optimize(Recorder& r, double eps, int mode) = 0;
     double get_step_size(const VectorXd& d);
 };
 
 class GradDescent : public Optimizer {
 public:
     GradDescent(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
-    void optimize(double eps, int mode);
+    void optimize(Recorder& r, double eps, int mode);
 };
 
 class ConjGrad : public Optimizer {
 public:
     ConjGrad(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
-    void optimize(double eps, int mode);
+    void optimize(Recorder& r, double eps, int mode);
     
     double Dai_Yuan(const VectorXd& grad1, const VectorXd& grad2, const VectorXd& p);
     double FR(const VectorXd& grad1, const VectorXd& grad2);
@@ -39,7 +40,7 @@ public:
 class quasiNetwon : public Optimizer {
 public:
     quasiNetwon(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
-    void optimize(double eps, int mode);
+    void optimize(Recorder& r, double eps, int mode);
 
     MatrixXd Rank1(const MatrixXd& H, const VectorXd& delta, const VectorXd& gamma);
     MatrixXd DFP(const MatrixXd& H, const VectorXd& delta, const VectorXd& gamma);
