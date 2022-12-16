@@ -1,6 +1,4 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 #include <eigen3/Eigen/Dense>
@@ -12,46 +10,53 @@
 using namespace std;
 using namespace Eigen;
 
+void test_optimizer(int opt_mode) {
+    double eps = 1e-10;
+    double split_rate = 0.8;
+    double lambda[6] = {0.0, 0.1, 0.5, 1.0, 5.0, 10.0};
+    string ads[3] = {"abalone", "housing", "bodyfat"};
+    Data data(split_rate);
+
+    for (int i = 0; i < 3; i++) {
+        data.read_data("./data/" + ads[i] + "_scale.txt");
+        for (int j = 0; j < 6; j++) {
+            if (opt_mode == 2) {
+                for (int mode = 0; mode < 3; mode++) {
+                    LinearModel lin(data);
+                    quasiNetwon qN(lin, lambda[j]);
+                    string ad = "./result/quasiNewton/" + ads[i] + "_" + to_string(mode) + "_"+ to_string_precision(lambda[j], 1) + ".csv";
+                    Recorder r(ad);
+                    qN.optimize(r, eps, mode);
+                }
+            }
+            else if (opt_mode == 1) {
+                for (int mode = 0; mode < 3; mode++) {
+                    LinearModel lin(data);
+                    ConjGrad CG(lin, lambda[j]);
+                    string ad = "./result/ConjGrad/" + ads[i] + "_" + to_string(mode) + "_"+ to_string_precision(lambda[j], 1) + ".csv";
+                    Recorder r(ad);
+                    CG.optimize(r, eps, mode);
+                }
+            }
+            else {
+                LinearModel lin(data);
+                GradDescent GD(lin, lambda[j]);
+                string ad = "./result/Grad/" + ads[i] + "_"+ to_string_precision(lambda[j], 1) + ".csv";
+                Recorder r(ad);
+                GD.optimize(r, eps, 0);
+            }
+        }
+    }
+}
+
 int main()
 {   
-    cout << "<===================Start===================>" << endl;
-    double lambda = 10;
-    double lr = 1;
-    double eps = 1e-9;
-    double split_rate = 0.8;
+    cout << "<=======================Start=======================>" << endl;
     
-    Data data(split_rate);
-    // data.read_data("./data/housing.txt");
-    data.read_data("./data/bodyfat_scale.txt");
-    LinearModel lin(data);
-    // cout << lin.hess(lambda) << endl;
-    
-    GradDescent GD(lin, lr, lambda);
-    Recorder r1("bodyfat.csv");
-    GD.optimize(r1, eps, 0);
-
-    // quasiNetwon qN(lin, lr, lambda);
-    // qN.optimize(eps, 2);
-
-    // ConjGrad CG(lin, lr, lambda);
-    // CG.optimize(eps, 0);
-
-    // double h = GD.Armijo(-1*lin.gradient(lambda), lr, 0.5, 1);
-    // cout << h << endl;
-    // double lambda = 0.0;
-    // double lr = 0.0001;
-    // 
-    // VectorXd w1 = lin.get_weights();
-
-    // GradDescent GD(lin, lr, lambda);
-    // GD.optimize(data, 1e-3);
-
-    
-
+    int test_mode = 0;
+    cin >> test_mode;
+    test_optimizer(test_mode);
     
     
-    // 
-    // cout << "Loss with lambda=" << lambda << ": " << _calc_loss(data.get_Y(), Y_hat) << endl;
-    // cout << "Gradient:" << endl;
-    cout << "<====================End====================>" << endl;
+    cout << "<========================End========================>" << endl;
 }

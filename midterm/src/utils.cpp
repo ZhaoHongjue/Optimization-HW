@@ -1,5 +1,6 @@
 #include <iostream>
 #include <eigen3/Eigen/Dense>
+#include <iomanip>
 #include "utils.h"
 using namespace std;
 using namespace Eigen;
@@ -17,10 +18,8 @@ double _calc_loss(const VectorXd& Y, const VectorXd& Y_hat) {
     return (err.transpose() * err)(0, 0) / err.size();
 }
 
-VectorXd _get_gradient(const MatrixXd& X, const VectorXd& Y, const VectorXd& weights, double lambda) {
-    int num_example = X.rows();
-    auto X_extended = _get_extended_X(X);
-    auto pMSE = -2.0 / num_example * X_extended.transpose() * (Y - X_extended * weights);
-    auto pPenalty = 2 * lambda * weights;
-    return pMSE + pPenalty;
+string to_string_precision(const double in_num, const int pre) {
+	ostringstream out_str;
+	out_str << setiosflags(ios::fixed) << std::setprecision(pre) << in_num;    
+	return out_str.str();
 }

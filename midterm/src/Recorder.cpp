@@ -12,7 +12,7 @@ void Recorder::push_back(double train_loss, double val_loss, double grad_norm) {
 
 void Recorder::to_csv() {
     ofstream outCSV;
-    outCSV.open("data.csv");
+    outCSV.open(this->ad);
     outCSV << ",train_loss,val_loss,grad_norm" << endl;
     for (int i = 0; i < train_losses.size(); i++) {
         outCSV << i << "," 
@@ -20,4 +20,5 @@ void Recorder::to_csv() {
                << val_losses[i] << "," 
                << grad_norms[i] << endl;
     }
+    outCSV.close();
 }

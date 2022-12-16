@@ -12,24 +12,23 @@ using namespace Eigen;
 class Optimizer {
 protected:
     LinearModel lin;
-    double lr;
     double w_decay;
 public:
-    Optimizer(LinearModel lin, double lr, double w_decay): lin(lin), lr(lr), w_decay(w_decay) {};
+    Optimizer(LinearModel lin, double w_decay): lin(lin), w_decay(w_decay) {};
     virtual ~Optimizer() {};
-    virtual void optimize(Recorder& r, double eps, int mode) = 0;
+    virtual void optimize(Recorder& r, double eps, int mode) {};
     double get_step_size(const VectorXd& d);
 };
 
 class GradDescent : public Optimizer {
 public:
-    GradDescent(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    GradDescent(LinearModel lin, double w_decay): Optimizer(lin, w_decay) {};
     void optimize(Recorder& r, double eps, int mode);
 };
 
 class ConjGrad : public Optimizer {
 public:
-    ConjGrad(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    ConjGrad(LinearModel lin, double w_decay): Optimizer(lin, w_decay) {};
     void optimize(Recorder& r, double eps, int mode);
     
     double Dai_Yuan(const VectorXd& grad1, const VectorXd& grad2, const VectorXd& p);
@@ -39,7 +38,7 @@ public:
 
 class quasiNetwon : public Optimizer {
 public:
-    quasiNetwon(LinearModel lin, double lr, double w_decay): Optimizer(lin, lr, w_decay) {};
+    quasiNetwon(LinearModel lin, double w_decay): Optimizer(lin, w_decay) {};
     void optimize(Recorder& r, double eps, int mode);
 
     MatrixXd Rank1(const MatrixXd& H, const VectorXd& delta, const VectorXd& gamma);
