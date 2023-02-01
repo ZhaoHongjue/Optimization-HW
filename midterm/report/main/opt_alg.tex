@@ -2,34 +2,188 @@
 
 \subsection{Gradient Method}
 
+Gradient Method is one of the most common optimization algorithm in many applications, for instance, Deep Learning and so on.
+Just as its name, the \emph{antigradient} is choosen to be the search direction of the Gradient Method, since its the locally 
+steepest descent of a differentiable function. 
+
+The general algorithm form of Gradient Method is as Algorithm.~\ref{alg:gradient-method}
 \begin{algorithm}[!htbp]
     \caption{Gradient Method}\label{alg:gradient-method}
     \KwIn{Objective function \(f(\xB)\), gradient function \(\gB(\xB) = \grad f(\xB)\) and accuracy \(\varepsilon\).}
-    \KwOut{Local minimum of \(f(\xB)\): \(\xB\).}
-    \textbf{Initialization}: Set \(k = 0\) and initialize \(\xB^{(0)} \in \R^n\). \\
+    \KwOut{Local minimum of \(f(\xB)\): \(\xB^*\).}
+    \textbf{Initialization}: Set \(k = 0\) and initialize \(\xB_0 \in \R^n\). \\
     \While{True} {
-        Calculate \(f(\xB^{(k)})\). \\
         Calculate gradient \(\gB_k = \gB(\xB^{(k)})\).\\
         \eIf {\(\norm{\gB_k} < \varepsilon\)} {
-            Stop iteration and Let \(\xB^* = \xB^{(k)}\).
+            Stop iteration and Let \(\xB^* = \xB_k\).
         }{
-            Let \(\pB = -\gB(\xB^{(k)})\)
+            Let \(\xB_{k+1} = \xB_k - h_k \gB_k\)
         }
+        \(k = k+1\)
     }
-    
-    % \textbf{Initialization}: Set \(k = 0\), \(\mathscr{I}_{-1} = \emptyset\). Here \(k\) is the iteration counter and \(\mathscr{I}_k\) is the accumulated \emph{informational set}.\\
-    % \While{True}{
-    %     Call oracle \(\mathcal{O}\) at point \(\bm{x}_k\). \\
-    %     Update the informational set: \(\mathscr{I}_k = \mathscr{I}_{k-1} \cup (\bm{x}_k, \mathcal{O}(x_k))\). \\
-    %     Apply the rules of method \(\mathscr{M}\) to \(\mathscr{I}_k\) and generate a new point \(\bm{x}_{k+1}\). \\
-    %     \eIf{\(\mathscr{I}_\epsilon\)}{
-    %         Form output \(\solution\).
-    %     }{
-    %         \(k:= k+1\).
-    %     }
-    % }
 \end{algorithm}
 
 \subsection{Conjugate Gradient Method}
 
-\subsection{quasi-Newton Method}
+Conjugate gradient methods was initially developed for minimizing quadratic
+functions. Consider the problem
+\[
+    \min_{\xB \in \R^n} f(\xB)  
+\]
+with \(f(\xB) = \alpha + \innerprod{\aB}{\xB} + \frac{1}{2} \innerprod{\bm{Ax}}{\xB}\)
+and \(\bm{A} = \bm{A}^\top \succ 0\). We have known that the solution of this problem is
+\(\xB^* = -\bm{A}^{-1}\bm{a}\).
+
+Consider the linear \emph{Krylov} subspaces
+\[
+    \mathscr{L}_k = \Lin \{ 
+        \bm{A} (\xB_0 - \xB^*), \dots, \bm{A}^k (\xB_0 - \xB^*)  
+    \}, \quad k \ge 1,  
+\]
+where \(\bm{A}^k\) is the \(k\)-th power of matrix \(\bm{A}\). A sequence of points \(\{\xB_k\}\)
+is generated in accordance with the following rule:
+\[
+    \xB_k = \mathop{\arg \min} \{ 
+        f(\xB) \mid \xB \in \xB_0 + \mathscr{L}_k  
+    \}, \quad k \ge 1.  
+\]
+For any \(k \ge 1\) we have \(\mathscr{L}_k = \Lin \{ \grad f(\xB_0), \dots, \grad f(\xB_{k-1}) \}\). Here
+we define \(\bm{\delta}_i = \xB_{i+1} - \xB_i\), and it is also clear that 
+\(\mathscr{L}_k = \Lin \{ \bm{\delta}_0, \dots, \bm{\delta}_{k-1} \}\). From this we can derive the algorithm form 
+of Conjugate Gradient Method as Algorithm.~\ref{alg:conjugate-grad}.
+
+\begin{algorithm}[!htbp]
+    \caption{Conjugate Gradient Method}\label{alg:conjugate-grad}
+    \KwIn{Objective function \(f(\xB)\) and accuracy \(\varepsilon\).}
+    \KwOut{Local minimum of \(f(\xB)\): \(\xB^*\).}
+    \textbf{Initialization}: Set \(k = 0\), and initialize \(\xB_0 \in \R^n\). \\
+    Compute \(f(\xB_0)\) and \(\grad f(\xB_0)\) and set \(\pB_0 = \grad f(\xB_0)\).\\
+    \While{True} {
+        \eIf {\(\norm{\grad f(\xB_k)} < \varepsilon\)} {
+            Stop iteration and Let \(\xB^* = \xB_k\).
+        }{
+            Let \(\xB_{k+1} = \xB_k - h_k \pB_k\). \\
+            Compute \(f(\xB_{k+1})\) and \(\grad f(\xB_{k+1})\). \\
+            Compute coefficient \(\beta_k\). \\
+            Define \(\pB_{k+1} = \grad f(\xB_{k+1}) - \beta_k \pB_k\).
+        }
+        \(k = k+1\)
+    }
+\end{algorithm}
+
+There exist many different formulas for the coefficient \(\beta_k\). There are three most popular
+expressions.
+\begin{enumerate}
+    \item {
+        Dai-Yuan:
+        \[
+            \beta_k = \frac{\norm{\grad f(\xB_{k+1})}^2}
+            {\innerprod{\grad f(\xB_{k+1}) - \grad f(\xB_{k})}{\pB_k}}  
+        \]
+    }
+    \item {
+        Fletcher–Rieves: 
+        \[
+            \beta_k = -\frac{\norm{\grad f(\xB_{k+1})}^2}{\norm{\grad f(\xB_{k})}^2}  
+        \]
+    }
+    \item {
+        Polak–Ribbiere:
+        \[
+            \beta_k = -\frac{\innerprod{\grad f(\xB_{k+1})}{\grad f(\xB_{k+1}) - \grad f(\xB_{k})}}{\norm{\grad f(\xB_{k})}^2}  
+        \]
+    }
+\end{enumerate}
+
+\subsection{Quasi-Newton Method}
+
+Quasi-Newton Method, which is also called \emph{variable metirc method}, is an alternative of Newton's Method.
+The Newton's Method requires Hessian matrix when finding the local minima. Nonetheless, it may be too expensive
+to calculate Hessian matrix each iteration. In contrast, quasi-Newton methods can achieve similar performance
+even when the Hessian matrix is unavailable.
+
+For Newton's Method, it follows the following equation to finding the local minima:
+\[
+    \xB_{k+1} = \xB_k - [\hess f(\xB)]^{-1} \grad f(\xB).  
+\]
+Since the Hessian matrix is unavailable in some cases, the quasi-Newton methods follow the following equation to finding the local minima:
+\[
+    \xB_{k+1} = \xB_k - h_k \bm{H}_k \grad f(\xB),
+\]
+in which \(\bm{H}_k \to [\hess f(\xB^*)]^{-1}\). If \(\bm{H}_{k+1}\) satisfies
+\[
+    \bm{H}_{k+1} = \bm{H}_{k+1}^\top \succ 0 \quad \text{and} \quad 
+    \bm{H}_{k+1}(\grad f(\xB_{k+1}) - \grad f(\xB_{k})) = \xB_{k+1} - \xB_k,
+\]
+we call it satisfies \emph{quasi-Newton rule}. The general algorithm form of quasi-Newton Method is as Algorithm.~\ref{alg:quasi-newton}.
+
+\begin{algorithm}[!htbp]
+    \caption{quasi-Newton Method}\label{alg:quasi-newton}
+    \KwIn{Objective function \(f(\xB)\) and accuracy \(\varepsilon\).}
+    \KwOut{Local minimum of \(f(\xB)\): \(\xB^*\).}
+    \textbf{Initialization}: Set \(k = 0\), \(\bm{H}_0 = \bm{I}_n\), and initialize \(\xB_0 \in \R^n\). \\
+    Compute \(f(\xB_0)\) and \(\grad f(\xB_0)\).\\
+    \While{True} {
+        Calculate gradient \(\pB_k = \bm{H}_k \grad f(\xB_k)\).\\
+        \eIf {\(\norm{\grad f(\xB_k)} < \varepsilon\)} {
+            Stop iteration and Let \(\xB^* = \xB_k\).
+        }{
+            Let \(\xB_{k+1} = \xB_k - h_k \pB_k\). \\
+            Compute \(f(\xB_{k+1})\) and \(\grad f(\xB_{k+1})\). \\
+            Update the matrix \(\bm{H}_k\) to \(\bm{H}_{k+1}\).
+        }
+        \(k = k+1\)
+    }
+\end{algorithm}
+
+There are several ways to satisfy the quasi-Newton relation. Here we define 
+\[
+    \Delta \bm{H}_k = \bm{H}_{k+1} - \bm{H}_k, \quad \bm{\gamma}_k = \grad f(\xB_{k+1}) - \grad f(\xB)_k, \quad \bm{\delta}_k = \xB_{k+1} - \xB_k.  
+\]
+
+Then three most popular updating methods are as follows:
+\begin{enumerate}
+    \item {Rank-one correction scheme}:
+        \[
+            \Delta \bm{H}_k = \frac{(\bm{\delta}_k - \bm{H}_k\bm{\gamma}_k)(\bm{\delta}_k - \bm{H}_k\bm{\gamma}_k)^\top}{\innerprod{\bm{\delta}_k - \bm{H}_k\bm{\gamma}_k}{\bm{\gamma}_k}}  
+        \]
+    \item {Davidon–Fletcher–Powell scheme (DFP)}:
+        \[
+            \Delta \bm{H}_k = \frac{\bm{\delta}_k\bm{\delta}_k^\top}{\innerprod{\bm{\gamma}_k}{\bm{\delta}_k}} 
+            - \frac{\bm{H}_k\bm{\gamma}_k\bm{\gamma}_k^\top\bm{H}_k}{\innerprod{\bm{H}_k\bm{\gamma}_k}{\bm{\gamma}_k}}
+        \]
+    \item {Broyden–Fletcher–Goldfarb–Shanno scheme (BFGS)}:
+        \[
+            \Delta \bm{H}_k = \beta_k \frac{\bm{\delta}_k\bm{\delta}_k^\top}{\innerprod{\bm{\gamma}_k}{\bm{\delta}_k}} 
+            - \frac{\bm{H}_k\bm{\gamma}_k\bm{\delta}_k^\top + \bm{\delta}_k\bm{\gamma}_k^\top\bm{H}_k}{\innerprod{\bm{\gamma}_k}{\bm{\delta}_k}}
+        \]
+        where \(\beta_k = 1 + \innerprod{\bm{H}_k\bm{\gamma}_k}{\bm{\gamma}_k} / \innerprod{\bm{\gamma}_k}{\bm{\delta}_k}\).
+\end{enumerate}
+
+\subsection{Step-Length Selection}
+
+Gradient Method, Conjugate Gradient Method and Quasi-Newton Method are all \emph{the first-order optimization methods}, 
+which can be generally expressed as
+\[
+    \xB_{k+1} = \xB_k + h_k \pB_k,  
+\] 
+in which \(\pB_k\) is the \emph{search direction} which is related to \(\grad f(\xB_k)\) and \(h_k\) is the step size. For the step size, we usually hope
+it satisfies
+\[
+    h_k = \min_{h} f(\xB_k + h_k \pB_k).  
+\]
+When the objective function is quadratic, we can derive \(h_k\) analytically.
+
+\begin{thm}\label{thm:step-minimizer}
+    If \(f\) is convex quadratic
+    \[
+        f(\xB) = \frac{1}{2} \xB^\top \bm{Q} \xB - \bB^\top \xB,  
+    \]
+    Its one-dimensional minimizer along \(\xB_k + h_k \pB_k\) is given by
+    \[
+        h_k = -\frac{\grad f(\xB_k)^\top \pB_k}
+        {\pB_k^\top \bm{Q}\pB_k}    
+    \]
+\end{thm}
+
+The proof of Theorem.~\ref{thm:step-minimizer} can be found in Appendix.~\ref{app:proof}.

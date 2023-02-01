@@ -1,0 +1,55 @@
+\section{Appendix}\label{app}
+
+%%
+\subsection{Ordinary Least Squares Method}\label{app:OLS}
+
+
+Generally speaking we have a training dataset with training data \((\xB_1, y_1), \dots, 
+(\xB_N, y_N)\) from which we would like to estimate the parameter vector \(\wB\), and
+\(\xB_i = {(x_{i1}, x_{i2}, \dots, x_{ip})}^\top\).
+If we use \emph{Ordinary Least Squares} (OLS) method, we will pick the \(\wB\) which can
+minimize \emph{the residual sum of squares} (RSS)
+\begin{equation}\label{eq:RSS-OLS}
+    \begin{aligned}
+        \RSS (\wB) &= \sum_{i=1}^N {(y_i - f(\xB_i))}^2 \\
+        &= \sum_{i=1}^N {\left( y_i - \beta - \sum_{j=1}^p x_{ij}w_j \right)}^2.
+    \end{aligned}
+\end{equation}
+
+Denote by \(\bm{X} \in \R^{N \times (p + 1)}\) the matrix with each row an input vector, and similarly, let 
+\(\yB \in \R^N\) be the output vector in this training dataset. Then we can rewritte Eq (\ref{eq:RSS-OLS}) in
+as
+\begin{equation}\label{eq:RSS-OLS-mat}
+    \RSS(\wB) = {(\yB - \bm{Xw})}^\top(\yB - \bm{Xw}) 
+\end{equation}
+This is a quadratic function. Differentiating with respect to \(\wB\) we can get 
+\begin{equation}
+    \begin{aligned}
+        \pdv{\RSS}{\wB} &= -2 \bm{X}^\top (\yB - \bm{Xw}) \\
+        \pdv{\RSS}{\wB}{\wB^\top} &= 2\bm{X}^\top \bm{X}.
+    \end{aligned}
+\end{equation}
+Suppose that \(\bm{X}\) has full column rank. Therefore, \(\bm{X}^\top\bm{X}\) is positive definite.
+We can set the first derivative to \(0\)
+\begin{equation}
+    \bm{X}^\top (\yB - \bm{X\beta}) = 0
+\end{equation}
+to get the unique solution
+\begin{equation}\label{eq:solution-OLS-app}
+    \hat{\wB}_{\text{OLS}} = {\left(\bm{X}^\top \bm{X}\right)}^{-1} \bm{X}^\top \yB.
+\end{equation}
+
+%%
+\subsection{Proof of Theorems}\label{app:proof}
+\begin{proof}[Proof of Theorem.~\ref{thm:step-minimizer}]
+    For \(f(\xB) = \frac{1}{2} \xB^\top \bm{Q} \xB - \bB^\top \xB\),
+    \[
+        f(\xB + h\pB_k) = \frac{1}{2} {(\xB + h\pB_k)}^\top \bm{Q} (\xB + h\pB_k) - 
+        \bB^\top (\xB + h\pB_k)
+    \]
+    with respect to \(h\), and setting the derivative to zero, we obtain
+    \[
+        h = -\frac{\grad f {(\xB_k)}^\top \pB_k}{\pB_k^\top \bm{Q} \pB_k}.
+    \]
+    Therefore we get the one-dimensional minimizer along \(\xB_k + h \pB_k\). 
+\end{proof}
