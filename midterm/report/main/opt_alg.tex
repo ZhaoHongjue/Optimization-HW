@@ -95,6 +95,11 @@ expressions.
     }
 \end{enumerate}
 
+In a neighborhood of a strict minimum, the conjugate gradient schemes demonstrate a local \(n\)-step quadratic convergence:
+\[
+    \norm{\xB_{n+1} - \xB^*} \le \text{const} \cdot \norm{\xB_0 - \xB^*}^2  
+\]
+
 \subsection{Quasi-Newton Method}
 
 Quasi-Newton Method, which is also called \emph{variable metirc method}, is an alternative of Newton's Method.
@@ -160,6 +165,16 @@ Then three most popular updating methods are as follows:
         where \(\beta_k = 1 + \innerprod{\bm{H}_k\bm{\gamma}_k}{\bm{\gamma}_k} / \innerprod{\bm{\gamma}_k}{\bm{\delta}_k}\).
 \end{enumerate}
 
+In a neighborhood of strict minimum, quasi-Newton methods have a \emph{superlinear} rate of convergence: for any \(\xB_0 \in \R^n\) there exists a
+number \(N\) such that for all \(k \ge N\) we have
+\[
+    \norm{\xB_{k+1} - \xB^*} \le \text{const} \cdot \norm{\xB_k - \xB^*} \cdot \norm{\xB_{k-n} - \xB^*} 
+\]
+
+Generally speaking, in a neighborhood of a strict minimum, the quasi-Newton methods demonstrate the highest rate of convergence. However,
+the Conjugate Gradient Methods have the advantage of cheap iteration. As far as the global convergence is concerned, these schemes are not 
+better than the simplest Gradient Method.
+
 \subsection{Step-Length Selection}
 
 Gradient Method, Conjugate Gradient Method and Quasi-Newton Method are all \emph{the first-order optimization methods}, 
@@ -185,5 +200,5 @@ When the objective function is quadratic, we can derive \(h_k\) analytically.
         {\pB_k^\top \bm{Q}\pB_k}    
     \]
 \end{thm}
-
 The proof of Theorem.~\ref{thm:step-minimizer} can be found in Appendix.~\ref{app:proof}.
+
