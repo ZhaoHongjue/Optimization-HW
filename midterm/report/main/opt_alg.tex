@@ -118,7 +118,7 @@ in which \(\bm{H}_k \to [\hess f(\xB^*)]^{-1}\). If \(\bm{H}_{k+1}\) satisfies
 we call it satisfies \emph{quasi-Newton rule}. The general algorithm form of quasi-Newton Method is as Algorithm.~\ref{alg:quasi-newton}.
 
 \begin{algorithm}[!htbp]
-    \caption{quasi-Newton Method}\label{alg:quasi-newton}
+    \caption{Quasi-Newton Method}\label{alg:quasi-newton}
     \KwIn{Objective function \(f(\xB)\) and accuracy \(\varepsilon\).}
     \KwOut{Local minimum of \(f(\xB)\): \(\xB^*\).}
     \textbf{Initialization}: Set \(k = 0\), \(\bm{H}_0 = \bm{I}_n\), and initialize \(\xB_0 \in \R^n\). \\
@@ -138,7 +138,7 @@ we call it satisfies \emph{quasi-Newton rule}. The general algorithm form of qua
 
 There are several ways to satisfy the quasi-Newton relation. Here we define 
 \[
-    \Delta \bm{H}_k = \bm{H}_{k+1} - \bm{H}_k, \quad \bm{\gamma}_k = \grad f(\xB_{k+1}) - \grad f(\xB)_k, \quad \bm{\delta}_k = \xB_{k+1} - \xB_k.  
+    \Delta \bm{H}_k = \bm{H}_{k+1} - \bm{H}_k, \quad \bm{\gamma}_k = \grad f(\xB_{k+1}) - \grad f(\xB_k), \quad \bm{\delta}_k = \xB_{k+1} - \xB_k.  
 \]
 
 Then three most popular updating methods are as follows:
