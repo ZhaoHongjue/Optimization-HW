@@ -1,0 +1,66 @@
+\begin{excercise}\label{e2}
+    Derive the the dual problem of hard margin SVM.
+\end{excercise}
+
+\begin{SOLUTION}{e2}
+    First we derive the primal optimization problem of hard margin SVM. For hard margin SVM, it assumes the existence of a hyperplane that perfectly separates the training
+    sample into two populations of positively and negatively labeled points. 
+    
+    However, there are then infinitely many such separating hyperplanes. Consider the training dataset \(\{\xB_i, y_i\}_{i=1}^m\) for \(\xB \in \mathcal{X} \in \RBB^N\) and 
+    \(y_i \in \mathcal{Y} = \{+1, -1\}\), we define the geometric margin of linear classifier \(h: \xB \mapsto \wB^\top \xB + b\) at \(\xB\) as follows:
+    \[
+        \rho_h(\xB) = \frac{\abs{\wB^\top \xB + b}}{\norm{\wB}_2}.  
+    \]
+    Then we select hyperplane which can maximize the margin \(\rho\):
+    \[
+        \rho = \max_{\wB, b} \min_{i \in [m]} \frac{y_i (\wB^\top \xB_i + b)}{ \norm{\wB}_2}.  
+    \]
+    Observe that the last expression is invariant to multiplication \((\wB, b)\) by a positive scalar.
+    Thus we restrict ourselves to pairs \((\wB, b)\) scaled such that \(\min_{i \in [m]} y_i(\wB^\top \xB_i + b)= 1\):
+    \[
+        \rho = \max_{\wB, b} \frac{1}{\norm{\wB}_2}.  
+    \]
+    Since maximizing \(1/\norm{\wB}_2\) is equivalent to minimizing \(\frac{1}{2}\norm{\wB}_2\), the primal optimization problem can be concluded as
+    \begin{equation}\label{eq:primal-svm}
+        \begin{aligned}
+            &\min_{\wB, b} ~ \frac{1}{2} \norm{\wB}^2_2 \\
+            &\text{s.t.} ~ y_i (\wB^\top \xB + b) \ge 1, ~i = 1, \dots, m
+        \end{aligned}
+    \end{equation}
+    The Lagrangian of problem.~\ref*{eq:primal-svm} can then be defined for all \(\wB \in \RBB^N\),
+    \(b \in \RBB\), and \(\bm{\alpha} \in \RBB_+^m\), by
+    \begin{equation}
+        L(\wB, b, \bm{\alpha}) = \frac{1}{2} \norm{\wB}_2^2 - \sum_{i=1}^m \alpha_i [y_i (\wB^\top \xB + b) - 1].
+    \end{equation}
+    The KKT conditions are obtained by setting the gradient of the Lagrangian with
+    respect to the primal variables w and b to zero and by writing the complementarity
+    conditions:
+    \begin{equation}\label{eq:lag-w}
+        \grad_{\wB} L = \wB - \sum_{i=1}^m \alpha_i y_i \xB_i = 0 \quad \Longrightarrow \quad \wB = \sum_{i=1}^m \alpha_i y_i \xB_i
+    \end{equation}
+    \begin{equation}\label{eq:lag-b}
+        \grad_b L = - \sum_{i=1}^m \alpha_i y_i = 0 \quad \Longrightarrow \quad \sum_{i=1}^m \alpha_i y_i = 0
+    \end{equation}
+    \begin{equation}\label{eq:lag-alpha}
+        \forall i,~\alpha_i [y_i (\wB^\top \xB + b) - 1] = 0 \quad \Longrightarrow \quad \alpha_i = 0 \lor y_i (\wB^\top \xB + b) = 1
+    \end{equation}
+
+    To derive the dual form of the constrained optimization problem \ref{eq:primal-svm}, we plug into
+    the Lagrangian the definition of \(\wB\) in terms of the dual variables as expressed in (\ref{eq:lag-w}) and apply the constraint (\ref{eq:lag-b}).
+    This yields
+    \[
+        \begin{aligned}
+            L &= \frac{1}{2} \norm{\sum_{i=1}^m \alpha_i y_i \xB_i}^2 - \sum_{i,j=1}^m \alpha_i \alpha_j y_i y_j (\xB_i^\top \xB_j) - \sum_{i=1}^m \alpha_i y_i b + \sum_{i=1}^m \alpha_i \\ 
+            &= \sum_{i=1}^m \alpha_i - \frac{1}{2} \sum_{i,j=1}^{m} \alpha_i \alpha_j y_i y_j (\xB_i^\top \xB_j).
+        \end{aligned}
+    \]
+    This leads to the following dual optimization problem for hard margin SVM:
+    \[
+        \begin{aligned}
+            &\max_{\bm{\alpha}} ~ \sum_{i=1}^m \alpha_i - \frac{1}{2} \sum_{i,j=1}^{m} \alpha_i \alpha_j y_i y_j (\xB_i^\top \xB_j) \\
+            &\text{s.t.} \alpha_i \ge 0 \land \sum_{i=1}^{m} \alpha_i y_i = 0,~i = 1, \dots, m.
+        \end{aligned}  
+    \]
+    Obviously, the objective function is infinitely differentiable. Since the constraints are affine and convex, this dual problem is a convex optimization problem.
+    According to the KKT conditions, we can obtain the solution of the primal optimization problem.
+\end{SOLUTION}

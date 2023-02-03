@@ -1,0 +1,53 @@
+\begin{excercise}\label{e1}
+    Prove the following results.
+    For proximal point method, if $f$ is closed and convex and optimal value $f^*$ is finite and attained at $\xB_*$. We have
+    \[
+    f(\xB_k) - f^* \leq \frac{ \norm{\xB_0 - \xB_*}^2_2 }{ 2 \sum_{i=0}^{k-1} t_i}, \quad\textrm{for } k \geq 1.
+    \]
+\end{excercise}
+    
+\begin{PROOF}{e1}
+    \begin{lemma}\label{lemma:e1-1}
+        \(\uB = \prox_h(\xB)\) is equivalent to the following 
+        \begin{enumerate}
+            \item \(\xB - \uB \in \partial h(\uB)\),
+            \item \(h(\zB) \ge h(\uB) + (\xB - \uB)^\top (\zB - \uB)\) for all \(\zB\).
+        \end{enumerate}
+    \end{lemma}
+
+    The updating rule of proximal point method can be concluded as 
+    \[
+        \xB' = \prox_{tf}(\xB).
+    \]
+    According to Lemma.~\ref{lemma:e1-1}, we can obtain
+    \[
+        f(\zB) \ge f(\xB') + \frac{1}{t}(\xB - \xB')^\top (\zB - \xB')
+    \]
+    Let \(\zB = \xB\), we can obtain
+    \[
+        f(\xB') \le f(\xB) - \frac{1}{t}\norm{\xB - \xB'}^2_2.  
+    \]
+    Therefore, this algorithm is a descent method. Let \(\zB = \xB_*\), we can get
+    \[
+        \begin{aligned}
+            f(\xB') - f(\xB_*) &\le \frac{1}{t} (\xB - \xB')^\top(\xB' - \xB_*) \\
+            &= \frac{1}{t} [(\xB - \xB_*) - (\xB' - \xB_*)]^\top (\xB' - \xB_*) \\
+            &= \frac{1}{t} \left[ (\xB - \xB_*)^\top(\xB' - \xB_*) - \norm{\xB' - \xB_*}_2^2 \right]\\
+            &\le \frac{1}{t} \left[\norm{\xB - \xB_*}_2\norm{\xB' - \xB_*}_2 - \norm{\xB' - \xB_*}_2^2 \right]\\
+            &\le \frac{1}{t} \left[\frac{\norm{\xB - \xB_*}_2^2 + \norm{\xB' - \xB_*}_2^2}{2} - \norm{\xB' - \xB_*}_2^2 \right]\\
+            &= \frac{1}{2t}\left(\norm{\xB - \xB_*}_2^2 - \norm{\xB' - \xB_*}_2^2  \right)
+        \end{aligned}
+    \]
+    Let \(t = t_i\), \(\xB = \xB_i\), \(\xB' = \xB_{i+1}\). For \(i = 0, \dots, k-1\)
+    \[
+        t_i (f(\xB_{i+1}) - f(\xB_*)) \le \frac{1}{2} \left( 
+            \norm{\xB_i - \xB_*}_2^2 + \norm{\xB_{i+1} - \xB_*}_2^2
+        \right).
+    \]
+    Adding inequalities from \(i = 0\) to \(k-1\) gives
+    \[
+        \left( \sum_{i=0}^{k-1} t_i \right) (f(\xB_k) - f(\xB_*)) \le
+        \sum_{i=0}^{k-1} t_i (f(\xB_{i+1}) - f(\xB_*)) \le \frac{1}{2} \norm{\xB_0 - \xB_*}_2^2.
+    \]
+    Thus we have \(f(\xB_k) - f^* \leq ( \norm{\xB_0 - \xB_*}^2_2 ) /{ (2 \sum_{i=0}^{k-1} t_i})\) for \(k \ge 1\).
+\end{PROOF}

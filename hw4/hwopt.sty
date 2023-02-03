@@ -17,6 +17,8 @@
 \RequirePackage{parskip}
 \RequirePackage{graphicx}
 \RequirePackage{amsfonts}
+\RequirePackage{physics}
+\RequirePackage{hyperref}
 
 % Margins
 \RequirePackage[top=2.5cm, left=3cm, right=3cm, bottom=4.0cm]{geometry}
@@ -28,12 +30,13 @@
 \newcommand\Tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
 \newcommand\tstrut{\rule{0pt}{2.0ex}}         % = `top' strut
 \newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
-\newcommand{\innerproduct}[2]{\langle #1,~#2\rangle}
+\newcommand{\innerprod}[2]{\langle #1,~#2\rangle}
 
 \newenvironment{SOLUTION}[1]{\paragraph{Solution of Excercise \ref{#1}:}}{\hfill$\square$}
 \newenvironment{PROOF}[1]{\paragraph{Proof of Excercise \ref{#1}:}}{\hfill$\square$}
 \theoremstyle{definition}
 \newtheorem{excercise}{Excercise}
+\newtheorem{lemma}{Lemma}
 
 %-----------------------------------------------------------------------------
 \endinput
